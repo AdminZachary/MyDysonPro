@@ -1,7 +1,7 @@
 import SwiftUI
 import UserNotifications
 
-/// First-launch walkthrough. Paper Bauhaus page, one primary button at the bottom.
+/// First-launch walkthrough. System grouped background, one glass primary button at the bottom.
 struct OnboardingView: View {
     @AppStorage("onboarding.done") private var done = false
     @EnvironmentObject var model: AppModel
@@ -26,19 +26,18 @@ struct OnboardingView: View {
                     .frame(maxWidth: .infinity)
             }
             .glassButton(prominent: true)
-            .tint(Palette.blue)
+            .tint(.indigo)
             .touchTarget()
             .padding(.horizontal, 24)
             .padding(.top, 8)
 
             Button("跳过") { done = true }
-                .font(.footnote)
-                .foregroundStyle(Palette.secondaryInk)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
                 .touchTarget()
                 .padding(.bottom, 4)
         }
-        .background(Palette.canvas.ignoresSafeArea())
-        .foregroundStyle(Palette.ink)
+        .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
     }
 
     private func pageView<Content: View>(_ symbol: String, _ title: String, _ subtitle: String,
@@ -46,13 +45,12 @@ struct OnboardingView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Image(systemName: symbol)
-                    .font(.title)
-                    .foregroundStyle(LevelPalette.labelColor(0))
-                    .frame(width: 64, height: 64)
-                    .background(Palette.blue, in: RoundedRectangle(cornerRadius: 4))
+                    .font(.largeTitle)
+                    .foregroundStyle(.indigo)
+                    .frame(minWidth: 44, minHeight: 44, alignment: .leading)
                     .padding(.top, 28)
-                Text(title).font(.title.weight(.bold)).fixedSize(horizontal: false, vertical: true)
-                Text(subtitle).font(.body).foregroundStyle(Palette.secondaryInk).fixedSize(horizontal: false, vertical: true)
+                Text(title).font(.largeTitle.weight(.bold)).fixedSize(horizontal: false, vertical: true)
+                Text(subtitle).font(.body).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 content()
             }
             .padding(24)
@@ -67,7 +65,6 @@ struct OnboardingView: View {
                 row("iphone", "iPhone：暂停任何 App 的播放，早上给你一份小结")
                 row("headphones", "Dyson Zone（可选）：空气、噪音、风扇、降噪")
             }
-            .card()
         }
     }
 
@@ -79,12 +76,11 @@ struct OnboardingView: View {
                 row("3.circle.fill", "iPhone 上的 Watch App → 找到 SleepPause → 安装")
                 row("4.circle.fill", "免费账号签名 7 天后过期，需要重新运行一次")
                 HStack {
-                    Image(systemName: model.watchAppInstalled ? "checkmark.seal.fill" : "applewatch.slash")
-                        .foregroundStyle(model.watchAppInstalled ? Palette.blue : Palette.red)
-                    Text(model.watchAppInstalled ? "已检测到手表 App" : "还没检测到手表 App").font(.footnote)
+                    Image(systemName: model.watchAppInstalled ? "checkmark.circle.fill" : "applewatch.slash")
+                        .foregroundStyle(model.watchAppInstalled ? Color.indigo : Color.red)
+                    Text(model.watchAppInstalled ? "已检测到手表 App" : "还没检测到手表 App").font(.subheadline)
                 }
             }
-            .card()
         }
         .onAppear { model.refreshWatchState() }
     }
@@ -99,10 +95,10 @@ struct OnboardingView: View {
                     (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
                 }
                 permButton("music.note", "Apple Music 控制（可选）", "music") {
-                    await model.requestMusicAuthorization(); return true
+                    model.requestMusicAuthorization(); return true
                 }
                 Text("蓝牙和定位会在你用到 Zone、通勤地图时再询问。")
-                    .font(.caption).foregroundStyle(Palette.secondaryInk)
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
     }
@@ -110,7 +106,6 @@ struct OnboardingView: View {
     private var zone: some View {
         pageView("headphones", "我的耳机", "选你平时戴的那一副。以后可以在睡眠页的“选项”里改。") {
             HeadphonePicker(suggested: HeadphoneRoute.suggestion())
-                .card()
         }
     }
 
@@ -118,7 +113,7 @@ struct OnboardingView: View {
         Label {
             Text(text).font(.subheadline).fixedSize(horizontal: false, vertical: true)
         } icon: {
-            Image(systemName: symbol).foregroundStyle(Palette.blue).frame(width: 24)
+            Image(systemName: symbol).foregroundStyle(.indigo).frame(width: 28)
         }
     }
 
@@ -127,17 +122,15 @@ struct OnboardingView: View {
             Task { if await ask() { granted.insert(key); Haptics.success() } }
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: symbol).frame(width: 28).foregroundStyle(Palette.blue)
-                Text(title).multilineTextAlignment(.leading).foregroundStyle(Palette.ink)
+                Image(systemName: symbol).frame(width: 28).foregroundStyle(.indigo)
+                Text(title).multilineTextAlignment(.leading)
                 Spacer(minLength: 8)
                 Image(systemName: granted.contains(key) ? "checkmark.circle.fill" : "chevron.right")
-                    .foregroundStyle(granted.contains(key) ? Palette.blue : Palette.secondaryInk)
+                    .foregroundStyle(granted.contains(key) ? Color.indigo : Color.secondary)
             }
             .padding(.horizontal, 12)
             .touchTarget()
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 4))
-            .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.hairline, lineWidth: 1))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bordered)
     }
 }

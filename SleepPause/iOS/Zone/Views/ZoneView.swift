@@ -44,7 +44,8 @@ struct ZoneView: View {
                 }
             }
             .navigationTitle("Dyson Zone")
-            .paperBackdrop(Palette.blue)
+            .navigationBarTitleDisplayMode(.large)
+            .paperBackdrop()
             .minimizingNavigationBar()
             .refreshable { if !zone.isReady { zone.bootstrap() } }
             .sheet(isPresented: $showLogin) { ZoneLoginView() }

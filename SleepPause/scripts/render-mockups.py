@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
-"""Draw labelled Bauhaus mockups for docs/previews. Not device screenshots."""
+"""Draw labelled Apple-style mockups for docs/previews. Not device screenshots."""
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).resolve().parents[1] / "docs" / "previews"
-PAPER = (243, 239, 230)
-SURFACE = (251, 248, 241)
-INK = (26, 24, 20)
-MUTED = (74, 69, 60)
-BLUE = (30, 75, 153)
-OCHRE = (166, 124, 0)
-RED = (180, 35, 24)
-HAIR = (217, 210, 197)
-NIGHT = (17, 12, 10)
-NSURF = (28, 20, 16)
-NINK = (231, 199, 168)
-NMUTED = (184, 154, 128)
-AMBER = (212, 120, 72)
-NDANGER = (201, 107, 90)
+GROUP = (242, 242, 247)
+CARD = (255, 255, 255)
+INK = (0, 0, 0)
+SEC = (99, 99, 102)
+INDIGO = (88, 86, 214)
+GREEN = (52, 199, 89)
+YELLOW = (255, 204, 0)
+ORANGE = (255, 149, 0)
+RED = (255, 59, 48)
+TEAL = (48, 176, 199)
+DARK = (0, 0, 0)
+DARKCARD = (28, 28, 30)
+DARKINK = (255, 255, 255)
+DARKSEC = (174, 174, 178)
+WHITE = (255, 255, 255)
 
 
 class MixedFont:
@@ -57,187 +58,187 @@ _install_mixed_text()
 
 def stamp(draw, w, h):
     draw.rectangle((0, h - 36, w, h), fill=(0, 0, 0))
-    draw.text((12, h - 28), "MOCKUP  示意稿  ·  不是真机截图", font=font(16, True), fill=(243, 239, 230))
+    draw.text((12, h - 28), "MOCKUP  示意稿  ·  不是真机截图", font=font(16, True), fill=WHITE)
 
 
-def phone(title, paint):
+def phone(bg, paint):
     w, h = 860, 1600
-    img = Image.new("RGB", (w, h), PAPER)
+    img = Image.new("RGB", (w, h), bg)
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((24, 24, w - 24, h - 48), radius=36, outline=INK, width=3)
-    d.text((48, 48), title, font=font(28, True), fill=INK)
     paint(d, w, h)
     stamp(d, w, h)
     return img
 
 
-def circle(d, box, fill):
-    d.ellipse(box, fill=fill)
+def card(d, box, fill=CARD, radius=22):
+    d.rounded_rectangle(box, radius=radius, fill=fill)
 
 
-def square(d, box, fill):
-    d.rectangle(box, fill=fill)
-
-
-def triangle(d, box, fill):
-    x0, y0, x1, y1 = box
-    d.polygon([( (x0+x1)/2, y0), (x1, y1), (x0, y1)], fill=fill)
+def icon(d, xy, fill, glyph):
+    x, y = xy
+    d.rounded_rectangle((x, y, x + 36, y + 36), radius=8, fill=fill)
+    d.text((x + 8, y + 4), glyph, font=font(22, True), fill=WHITE)
 
 
 def sleep(d, w, h):
-    d.rectangle((24, 24, w - 24, h - 48), fill=NIGHT)
-    d.text((56, 90), "SleepPause", font=font(22), fill=NMUTED)
-    d.rounded_rectangle((56, 140, w - 56, 420), radius=6, fill=NSURF, outline=NMUTED)
-    d.text((80, 170), "守候中", font=font(54, True), fill=NINK)
-    d.text((80, 250), "睡着后自动暂停播放", font=font(26), fill=NMUTED)
-    d.text((80, 292), "降噪保持开启", font=font(26), fill=NMUTED)
-    circle(d, (w - 160, 180, w - 100, 240), AMBER)
-    d.rounded_rectangle((56, 460, w - 56, 760), radius=6, fill=NSURF, outline=NMUTED)
-    d.text((80, 490), "助眠声音", font=font(28, True), fill=NINK)
-    d.text((80, 540), "实时生成，不循环", font=font(22), fill=NMUTED)
-    circle(d, (w - 180, 500, w - 100, 580), AMBER)
-    d.rounded_rectangle((56, h - 220, w - 56, h - 120), radius=8, fill=NDANGER)
-    d.text((250, h - 190), "停止守候", font=font(32, True), fill=NIGHT)
+    d.text((48, 70), "睡眠", font=font(44, True), fill=DARKINK)
+    card(d, (40, 160, w - 40, 460), DARKCARD)
+    icon(d, (64, 188), INDIGO, "Z")
+    d.text((112, 192), "睡眠", font=font(22, True), fill=INDIGO)
+    d.text((64, 250), "守候中", font=font(52, True), fill=DARKINK)
+    d.text((64, 330), "睡着后自动暂停播放", font=font(24), fill=DARKSEC)
+    d.text((64, 372), "降噪保持开启", font=font(24), fill=DARKSEC)
+    card(d, (40, 490, w - 40, 760), DARKCARD)
+    icon(d, (64, 516), ORANGE, "dB")
+    d.text((112, 520), "噪音剂量", font=font(22, True), fill=ORANGE)
+    d.text((64, 580), "35", font=font(56, True), fill=DARKINK)
+    d.text((160, 610), "%", font=font(24), fill=DARKSEC)
+    d.text((64, 660), "正常  ·  好", font=font(22), fill=DARKSEC)
+    d.rounded_rectangle((64, 710, w - 80, 730), radius=6, fill=(48, 48, 54))
+    d.polygon([(90, 728), (220, 700), (400, 718), (620, 690), (760, 724)], fill=ORANGE)
+    d.rounded_rectangle((48, h - 210, w - 48, h - 110), radius=16, fill=RED)
+    d.text((300, h - 180), "停止守候", font=font(30, True), fill=WHITE)
 
 
 def zone(d, w, h):
-    d.rectangle((40, 100, w - 40, 112), fill=BLUE)
-    d.text((56, 140), "Dyson Zone", font=font(36, True), fill=INK)
-    circle(d, (70, 230, 310, 470), BLUE)
-    d.text((150, 320), "好", font=font(40, True), fill=PAPER)
-    d.text((70, 490), "空气好", font=font(28, True), fill=INK)
-    d.text((70, 530), "NO2 18 ppb", font=font(20), fill=MUTED)
-    d.text((400, 240), "35%", font=font(48, True), fill=INK)
-    d.text((400, 310), "噪音剂量", font=font(20), fill=MUTED)
-    for i, col in enumerate((BLUE, BLUE, HAIR, HAIR)):
-        square(d, (400 + i * 90, 360, 470 + i * 90, 400), col)
-    circle(d, (400, 424, 436, 460), BLUE)
-    d.text((448, 428), "好", font=font(22, True), fill=INK)
-    d.rounded_rectangle((56, 620, w - 56, 980), radius=6, outline=HAIR, width=2)
-    d.text((80, 660), "电量 72%", font=font(24), fill=INK)
-    d.rounded_rectangle((80, 740, 380, 820), radius=6, outline=BLUE, width=3)
-    d.text((120, 762), "降噪", font=font(26, True), fill=INK)
-    d.rounded_rectangle((420, 740, 760, 820), radius=6, outline=BLUE, width=3)
-    d.text((470, 762), "风扇", font=font(26, True), fill=INK)
-    d.text((80, 880), "圆 = 好    方 = 一般", font=font(22), fill=MUTED)
-    d.text((80, 920), "三角 = 偏高    叉 = 差", font=font(22), fill=MUTED)
+    d.text((48, 70), "Dyson Zone", font=font(40, True), fill=INK)
+    card(d, (40, 160, w - 40, 560))
+    icon(d, (64, 188), TEAL, "A")
+    d.text((112, 192), "空气", font=font(22, True), fill=TEAL)
+    d.text((64, 250), "好", font=font(48, True), fill=INK)
+    d.text((64, 320), "NO2 18 ppb", font=font(22), fill=SEC)
+    icon(d, (430, 188), ORANGE, "dB")
+    d.text((478, 192), "噪音剂量", font=font(22, True), fill=ORANGE)
+    d.text((430, 250), "35%", font=font(48, True), fill=INK)
+    d.text((430, 330), "好", font=font(22), fill=SEC)
+    card(d, (40, 590, w - 40, 900))
+    d.text((64, 620), "72", font=font(48, True), fill=INK)
+    d.text((150, 648), "dB 环境", font=font(24), fill=SEC)
+    d.text((64, 700), "正常", font=font(22, True), fill=GREEN)
+    d.rounded_rectangle((64, 780, 360, 860), radius=22, fill=(232, 232, 255))
+    d.text((150, 804), "降噪", font=font(26, True), fill=INDIGO)
+    d.rounded_rectangle((400, 780, 760, 860), radius=22, fill=(236, 236, 240))
+    d.text((500, 804), "风扇", font=font(26), fill=INK)
 
 
 def onboarding(d, w, h):
-    d.rectangle((40, 100, w - 40, 112), fill=BLUE)
-    square(d, (70, 180, 170, 280), BLUE)
-    d.text((70, 320), "我的耳机", font=font(36, True), fill=INK)
-    d.text((70, 390), "Zone、AirPods 或其他耳机。", font=font(24), fill=MUTED)
-    d.text((70, 430), "没有 Zone 也能暂停播放。", font=font(24), fill=MUTED)
-    d.rounded_rectangle((70, 520, w - 70, 860), radius=6, fill=SURFACE, outline=HAIR)
-    for i, line in enumerate(("Dyson Zone", "AirPods / Beats", "其他蓝牙或有线耳机")):
-        d.text((100, 560 + i * 80), line, font=font(26), fill=INK)
-    d.rounded_rectangle((70, h - 280, w - 70, h - 180), radius=10, fill=BLUE)
-    d.text((340, h - 250), "继续", font=font(32, True), fill=PAPER)
-    d.text((380, h - 150), "跳过", font=font(20), fill=MUTED)
+    icon(d, (56, 80), INDIGO, "Z")
+    d.text((56, 150), "我的耳机", font=font(44, True), fill=INK)
+    d.text((56, 230), "Zone、AirPods 或其他耳机。", font=font(24), fill=SEC)
+    d.text((56, 270), "没有 Zone 也能暂停播放。", font=font(24), fill=SEC)
+    card(d, (40, 360, w - 40, 760))
+    rows = ("Dyson Zone", "AirPods / Beats", "其他蓝牙或有线耳机")
+    for i, line in enumerate(rows):
+        y = 400 + i * 110
+        d.text((80, y + 24), line, font=font(26), fill=INK)
+        mark = "✓" if i == 0 else ""
+        d.text((w - 140, y + 24), mark, font=font(28, True), fill=INDIGO)
+    d.rounded_rectangle((48, h - 250, w - 48, h - 150), radius=16, fill=INDIGO)
+    d.text((360, h - 220), "继续", font=font(30, True), fill=WHITE)
+    d.text((380, h - 120), "跳过", font=font(20), fill=SEC)
 
 
-def watch(d, w, h):
-    img_w = w
-    d.rectangle((0, 0, img_w, h), fill=(30, 26, 24))
-    cx, cy, r = img_w // 2, 620, 250
-    d.rounded_rectangle((cx - r, cy - r - 40, cx + r, cy + r + 220), radius=80, fill=NIGHT, outline=NMUTED, width=4)
-    d.text((cx - 70, cy - 180), "18", font=font(92, True), fill=NINK)
-    d.text((cx - 90, cy - 60), "静止分钟", font=font(22), fill=NMUTED)
-    d.rounded_rectangle((cx - 140, cy + 10, cx + 140, cy + 28), radius=8, fill=NSURF)
-    d.rounded_rectangle((cx - 140, cy + 10, cx - 20, cy + 28), radius=8, fill=AMBER)
-    d.text((cx - 80, cy + 50), "心率 58", font=font(22), fill=NINK)
-    d.rounded_rectangle((cx - 120, cy + 120, cx + 120, cy + 190), radius=8, outline=NDANGER, width=3)
-    d.text((cx - 70, cy + 138), "停止监测", font=font(22, True), fill=NDANGER)
+def watch_image():
+    w, h = 700, 900
+    img = Image.new("RGB", (w, h), DARK)
+    d = ImageDraw.Draw(img)
+    for i in range(h):
+        t = i / h
+        col = tuple(int(INDIGO[c] * (1 - t) + DARK[c] * t) for c in range(3))
+        d.line((0, i, w, i), fill=col)
+    d.text((24, 24), "Apple Watch", font=font(22, True), fill=DARKINK)
+    cx, cy = w // 2, 430
+    d.text((cx - 50, cy - 160), "18", font=font(92, True), fill=DARKINK)
+    d.text((cx - 80, cy - 40), "静止分钟", font=font(22), fill=DARKSEC)
+    d.text((cx - 40, cy + 10), "静止", font=font(22, True), fill=INDIGO)
+    d.rounded_rectangle((cx - 140, cy + 60, cx + 140, cy + 78), radius=8, fill=(255, 255, 255))
+    d.rounded_rectangle((cx - 140, cy + 60, cx - 10, cy + 78), radius=8, fill=INDIGO)
+    d.rounded_rectangle((cx - 150, cy + 140, cx + 150, cy + 220), radius=22, fill=RED)
+    d.text((cx - 70, cy + 162), "停止监测", font=font(22, True), fill=WHITE)
+    stamp(d, w, h)
+    return img
 
 
 def widgets(d, w, h):
-    d.rectangle((40, 120, 400, 480), fill=PAPER, outline=INK, width=2)
-    d.text((60, 150), "72%", font=font(42, True), fill=INK)
-    circle(d, (60, 230, 100, 270), BLUE)
-    d.text((116, 236), "空气好", font=font(24, True), fill=INK)
-    d.text((60, 320), "62 dB", font=font(36, True), fill=INK)
-    square(d, (60, 390, 90, 420), OCHRE)
-    d.text((104, 392), "一般", font=font(22, True), fill=INK)
-    d.rectangle((440, 120, 820, 360), fill=(18, 17, 15), outline=INK, width=2)
-    d.text((460, 150), "实时活动", font=font(22), fill=(244, 240, 230))
-    circle(d, (460, 210, 510, 260), (169, 196, 245))
-    d.text((530, 220), "好  ·  62", font=font(32, True), fill=(244, 240, 230))
-    d.text((60, 540), "形状在着色主屏幕下仍然可读", font=font(24), fill=MUTED)
+    card(d, (40, 120, 400, 500))
+    icon(d, (60, 148), TEAL, "A")
+    d.text((108, 152), "空气", font=font(20, True), fill=TEAL)
+    d.text((60, 210), "好", font=font(40, True), fill=INK)
+    d.text((60, 280), "62", font=font(48, True), fill=INK)
+    d.text((150, 308), "dB", font=font(22), fill=SEC)
+    d.text((60, 360), "正常", font=font(22, True), fill=GREEN)
+    d.text((60, 420), "剂量 35%", font=font(22), fill=SEC)
+    card(d, (440, 120, 820, 420), (28, 28, 30))
+    d.text((460, 150), "实时活动", font=font(22), fill=DARKSEC)
+    icon(d, (460, 210), GREEN, "好")
+    d.text((520, 214), "好", font=font(28, True), fill=DARKINK)
+    d.text((460, 290), "62", font=font(48, True), fill=DARKINK)
+    d.text((60, 560), "符号和文字一起出现，不单靠颜色", font=font(24), fill=SEC)
 
 
 def glass_zone(d, w, h):
-    d.text((56, 130), "控件用玻璃，内容是平的", font=font(28, True), fill=INK)
-    d.rounded_rectangle((56, 200, w - 56, 520), radius=28, fill=(255, 255, 255), outline=(180, 190, 210), width=2)
-    d.text((80, 230), "玻璃 · 仅控件", font=font(18), fill=BLUE)
-    d.rounded_rectangle((80, 300, 380, 380), radius=24, fill=(210, 225, 245))
-    d.text((140, 324), "降噪", font=font(26, True), fill=BLUE)
-    d.rounded_rectangle((420, 300, 760, 380), radius=24, fill=(236, 236, 236))
-    d.text((500, 324), "通透", font=font(26), fill=INK)
-    d.rounded_rectangle((56, 580, w - 56, 980), radius=6, fill=SURFACE, outline=HAIR)
-    d.text((80, 620), "空气", font=font(22), fill=MUTED)
-    circle(d, (80, 680, 200, 800), BLUE)
-    d.text((112, 720), "好", font=font(28, True), fill=PAPER)
-    triangle(d, (240, 680, 360, 800), RED)
-    d.text((400, 720), "偏高", font=font(28, True), fill=INK)
+    d.text((48, 80), "Dyson Zone", font=font(40, True), fill=INK)
+    d.text((48, 150), "内容在分组卡片里，玻璃只在按钮上", font=font(24), fill=SEC)
+    card(d, (40, 230, w - 40, 620))
+    icon(d, (64, 260), TEAL, "A")
+    d.text((112, 264), "空气", font=font(22, True), fill=TEAL)
+    d.text((64, 330), "好", font=font(48, True), fill=INK)
+    d.text((64, 410), "NO2 18 ppb", font=font(22), fill=SEC)
+    d.text((64, 470), "电量 72%  ·  已佩戴", font=font(22), fill=SEC)
+    d.rounded_rectangle((64, 680, 380, 780), radius=28, fill=(210, 210, 255))
+    d.text((150, 712), "降噪", font=font(28, True), fill=INDIGO)
+    d.rounded_rectangle((420, 680, 780, 780), radius=28, fill=(255, 255, 255))
+    d.text((520, 712), "通透", font=font(28), fill=INK)
+    d.text((48, 840), "主按钮是系统玻璃，列表保持分组背景", font=font(22), fill=SEC)
 
 
 def focus(d, w, h):
-    d.rectangle((40, 100, w - 40, 112), fill=BLUE)
-    d.text((70, 160), "专注", font=font(36, True), fill=INK)
-    d.text((70, 250), "专注中", font=font(24), fill=MUTED)
-    d.text((70, 300), "24:18", font=font(92, True), fill=INK)
-    d.text((70, 430), "已完成 2 个番茄", font=font(24), fill=MUTED)
-    d.rounded_rectangle((70, h - 360, w - 70, h - 270), radius=8, outline=RED, width=3)
-    d.text((360, h - 330), "结束", font=font(28, True), fill=RED)
-    d.rounded_rectangle((70, h - 240, w - 70, h - 140), radius=16, fill=(190, 210, 240))
-    d.text((340, h - 210), "暂停", font=font(32, True), fill=BLUE)
-    d.text((70, h - 110), "主操作在底部，结束与它分开", font=font(22), fill=MUTED)
+    d.text((48, 70), "专注", font=font(44, True), fill=INK)
+    card(d, (40, 170, w - 40, 520))
+    icon(d, (64, 200), ORANGE, "T")
+    d.text((112, 204), "专注中", font=font(22, True), fill=ORANGE)
+    d.text((64, 270), "24:18", font=font(84, True), fill=INK)
+    d.text((64, 400), "已完成 2 个番茄", font=font(24), fill=SEC)
+    d.rounded_rectangle((48, h - 360, w - 48, h - 270), radius=16, outline=RED, width=3)
+    d.text((370, h - 330), "结束", font=font(28, True), fill=RED)
+    d.rounded_rectangle((48, h - 240, w - 48, h - 140), radius=16, fill=ORANGE)
+    d.text((360, h - 210), "暂停", font=font(30, True), fill=WHITE)
+    d.text((48, h - 110), "主操作在底部，结束与它分开", font=font(22), fill=SEC)
 
 
 def settings(d, w, h):
-    d.text((56, 120), "夜间色，不是亮蓝", font=font(30, True), fill=NINK)
-    d.rectangle((24, 24, w - 24, h - 48), fill=NIGHT)
-    d.text((56, 120), "夜间色，不是亮蓝", font=font(30, True), fill=NINK)
-    rows = [("我的耳机  AirPods", True), ("写入健康", False), ("授权健康数据", None)]
-    y = 220
-    for label, on in rows:
-        d.rounded_rectangle((56, y, w - 56, y + 100), radius=6, fill=NSURF)
-        d.text((80, y + 32), label, font=font(24), fill=NINK)
-        if on is not None:
-            col = AMBER if on else (60, 48, 42)
-            d.rounded_rectangle((w - 180, y + 30, w - 90, y + 70), radius=16, fill=col)
+    d.text((48, 70), "睡眠", font=font(44, True), fill=DARKINK)
+    card(d, (40, 170, w - 40, 900), DARKCARD)
+    rows = (
+        ("我的耳机", "AirPods", INDIGO),
+        ("写入健康", "开", INDIGO),
+        ("授权健康数据", "", INDIGO),
+    )
+    y = 210
+    for title, value, tint in rows:
+        d.text((70, y + 28), title, font=font(26), fill=DARKINK)
+        d.text((w - 280, y + 28), value, font=font(24), fill=tint)
         y += 120
-    d.text((56, y + 20), "文字 #E7C7A8  ·  强调 #D47848", font=font(22), fill=NMUTED)
-    d.text((56, y + 60), "同一分钟不叠加耳机音量和环境噪音", font=font(22), fill=NMUTED)
+    d.text((70, y + 40), "同一分钟不叠加耳机音量和环境噪音", font=font(22), fill=DARKSEC)
+    d.text((70, y + 90), "系统深色  ·  靛蓝  ·  分组列表", font=font(22), fill=DARKSEC)
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     pages = {
-        "01-sleep-tab.png": lambda: phone("睡眠", sleep),
-        "02-zone-dashboard.png": lambda: phone("Zone", zone),
-        "03-onboarding.png": lambda: phone("引导", onboarding),
-        "04-watch.png": lambda: watch_image(),
-        "05-widgets.png": lambda: phone("小组件", widgets),
-        "06-glass-zone.png": lambda: phone("玻璃只在控件", glass_zone),
-        "07-glass-sleep-focus.png": lambda: phone("专注", focus),
-        "08-glass-ios27-settings.png": lambda: phone("睡眠设置", settings),
+        "01-sleep-tab.png": lambda: phone(DARK, sleep),
+        "02-zone-dashboard.png": lambda: phone(GROUP, zone),
+        "03-onboarding.png": lambda: phone(GROUP, onboarding),
+        "04-watch.png": watch_image,
+        "05-widgets.png": lambda: phone(GROUP, widgets),
+        "06-glass-zone.png": lambda: phone(GROUP, glass_zone),
+        "07-glass-sleep-focus.png": lambda: phone(GROUP, focus),
+        "08-glass-ios27-settings.png": lambda: phone(DARK, settings),
     }
     for name, make in pages.items():
         img = make()
         img.save(OUT / name, "PNG")
         print(name, img.size)
-
-
-def watch_image():
-    w, h = 700, 900
-    img = Image.new("RGB", (w, h), (24, 20, 18))
-    d = ImageDraw.Draw(img)
-    d.text((24, 24), "Apple Watch", font=font(22, True), fill=NINK)
-    watch(d, w, h)
-    stamp(d, w, h)
-    return img
 
 
 if __name__ == "__main__":

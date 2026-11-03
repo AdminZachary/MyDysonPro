@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Sleep tab. Always the warm night palette: dim paper, amber accent, no blue-white.
-/// The one primary action sits in the bottom thumb zone.
+/// Sleep tab, in the Health Sleep style: inset grouped list, indigo symbols,
+/// a large title, and one primary action in the bottom safe area.
+/// Armed nights dim the system dark appearance instead of swapping in a custom palette.
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
     @ObservedObject var extras = SleepExtrasStore.shared
@@ -11,89 +12,80 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    hero
-                    if let m = extras.morning, Date().timeIntervalSince(m.wake) < 18 * 3600 {
-                        MorningCard(summary: m)
-                    }
-                    SleepSoundsCard()
-                    NoiseDoseCard()
-                    streakStrip
-                    testCard
-                    optionsCard
-                    watchCard
-                    logCard
+            List {
+                Section { hero }
+                if let m = extras.morning, Date().timeIntervalSince(m.wake) < 18 * 3600 {
+                    Section { MorningCard(summary: m) }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 8)
-                .padding(.bottom, 12)
+                Section { SleepSoundsCard() }
+                Section { NoiseDoseCard() }
+                Section {
+                    SleepOnsetChart(onsets: extras.recentOnsets)
+                } header: {
+                    Label("入睡时刻", systemImage: "moon.zzz.fill").foregroundStyle(.indigo)
+                }
+                Section { streakStrip }
+                Section { testCard }
+                Section { optionsCard }
+                Section { watchCard }
+                Section { logCard }
             }
-            .navigationTitle("SleepPause")
+            .listStyle(.insetGrouped)
+            .navigationTitle("睡眠")
+            .navigationBarTitleDisplayMode(.large)
             .nightBackdrop()
-            .foregroundStyle(Night.ink)
-            .tint(Night.accent)
-            .toolbarBackground(Night.ground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .tint(.indigo)
             .minimizingNavigationBar()
             .safeAreaInset(edge: .bottom, spacing: 0) { primaryAction }
+            .brightness(model.isArmed ? -0.08 : 0)
             .onAppear { model.refreshWatchState(); extras.refreshAchievements(notify: false) }
             .sheet(isPresented: $showAchievements) { AchievementsView() }
             .sensoryFeedback(.impact(weight: .light, intensity: 0.35), trigger: extras.justUnlocked)
         }
         .preferredColorScheme(.dark)
-    }
-
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(model.isArmed ? "守候中" : "今晚")
-                        .font(.largeTitle.weight(.bold))
-                    Text(model.isArmed ? "睡着后自动暂停播放，降噪保持开启" : "戴上手表，点下面的开始，安心入睡")
-                        .font(.body)
-                        .foregroundStyle(Night.muted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 12)
-                Circle()
-                    .fill(model.isArmed ? Night.accent : Night.surface)
-                    .frame(width: 28, height: 28)
-                    .overlay(Circle().strokeBorder(Night.accent, lineWidth: 2))
-                    .accessibilityHidden(true)
-            }
-            if let onset = model.lastOnset {
-                Label("上次入睡 \(onset.formatted(date: .abbreviated, time: .shortened))", systemImage: "clock")
-                    .font(.footnote)
-                    .foregroundStyle(Night.muted)
-            }
-        }
-        .nightCard()
         .animation(reduceMotion ? nil : .smooth, value: model.isArmed)
     }
 
-    private var primaryAction: some View {
-        VStack(spacing: 0) {
-            Button {
-                if model.isArmed { model.stopTonight(); Haptics.night() }
-                else { Task { await model.startTonight(); Haptics.night() } }
-            } label: {
-                Label(model.isArmed ? "停止守候" : "开始今晚（同时启动手表）",
-                      systemImage: model.isArmed ? "stop.fill" : "bed.double.fill")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
+    private var hero: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("睡眠", systemImage: model.isArmed ? "moon.zzz.fill" : "bed.double.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.indigo)
+            Text(model.isArmed ? "守候中" : "准备好了")
+                .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+            Text(model.isArmed ? "睡着后自动暂停播放，降噪保持开启" : "戴上手表，点下面的开始，安心入睡")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            if let onset = model.lastOnset {
+                Label("上次入睡 \(onset.formatted(date: .abbreviated, time: .shortened))", systemImage: "clock")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(model.isArmed ? Night.danger : Night.accent)
-            .foregroundStyle(Night.onAccent)
-            .touchTarget()
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
-            .background(Night.ground)
-            .accessibilityHint(model.isArmed ? "结束今晚的入睡监测" : "开始今晚的入睡监测，降噪保持开启")
         }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var primaryAction: some View {
+        Button {
+            if model.isArmed { model.stopTonight(); Haptics.night() }
+            else { Task { await model.startTonight(); Haptics.night() } }
+        } label: {
+            Label(model.isArmed ? "停止守候" : "开始今晚（同时启动手表）",
+                  systemImage: model.isArmed ? "stop.fill" : "bed.double.fill")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 6)
+        }
+        .glassButton(prominent: true)
+        .tint(model.isArmed ? .red : .indigo)
+        .touchTarget()
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 12)
+        .accessibilityHint(model.isArmed ? "结束今晚的入睡监测" : "开始今晚的入睡监测，降噪保持开启")
     }
 
     private var streakStrip: some View {
@@ -102,26 +94,28 @@ struct ContentView: View {
                 ForEach(StreakKind.allCases, id: \.self) { k in
                     let s = extras.streaks[k] ?? Streak(current: 0, best: 0)
                     VStack(alignment: .leading, spacing: 4) {
-                        Image(systemName: k.symbol).font(.body)
-                            .foregroundStyle(s.current > 0 ? Night.accent : Night.muted)
+                        Label(k.label, systemImage: k.symbol)
+                            .font(.caption)
+                            .foregroundStyle(k == .focus ? Color.orange : Color.indigo)
+                            .labelStyle(.iconOnly)
+                            .accessibilityLabel(k.label)
                         Text("\(s.current)")
                             .font(.system(.title2, design: .rounded).weight(.bold))
                             .monospacedDigit()
                             .minimumScaleFactor(0.6)
                             .lineLimit(1)
-                        Text(k.label + (k.usesUnverifiedData ? "*" : ""))
-                            .font(.caption2)
-                            .foregroundStyle(Night.muted)
+                        Text(k.label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                Image(systemName: "chevron.right").foregroundStyle(Night.muted).padding(.top, 8)
+                Image(systemName: "chevron.right").foregroundStyle(.secondary)
             }
         }
         .buttonStyle(.plain)
         .touchTarget()
-        .nightCard()
         .accessibilityLabel("连续天数与成就")
     }
 
@@ -129,13 +123,12 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("测试").font(.headline)
             Text("先用音乐通过耳机播放，再试一次，确认会停。")
-                .font(.footnote).foregroundStyle(Night.muted)
+                .font(.subheadline).foregroundStyle(.secondary)
             Button("立即测试暂停") { model.testPauseNow(); Haptics.night() }
-                .buttonStyle(.bordered).tint(Night.accent).touchTarget()
+                .buttonStyle(.bordered).tint(.indigo).touchTarget()
             Button("20 秒后测试（先锁屏再等）") { model.testPauseLater(); Haptics.night() }
-                .buttonStyle(.bordered).tint(Night.muted).touchTarget()
+                .buttonStyle(.bordered).touchTarget()
         }
-        .nightCard()
     }
 
     private var optionsCard: some View {
@@ -149,18 +142,18 @@ struct ContentView: View {
             Button("授权健康数据") { Task { await model.requestHealthAuthorization() }; Haptics.night() }
                 .touchTarget()
         }
-        .nightCard()
     }
 
     private var watchCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Apple Watch").font(.headline)
+            Label("Apple Watch", systemImage: "applewatch")
+                .font(.headline)
+                .foregroundStyle(.indigo)
             status("已配对", model.watchPaired)
             status("手表 App 已安装", model.watchAppInstalled)
             status("当前可直连", model.watchReachable)
             Button("刷新") { model.refreshWatchState(); Haptics.night() }.touchTarget()
         }
-        .nightCard()
     }
 
     private var logCard: some View {
@@ -171,17 +164,16 @@ struct ContentView: View {
                 Button("清空") { model.clearLog(); Haptics.night() }.font(.subheadline).touchTarget()
             }
             if model.log.isEmpty {
-                Text("还没有记录。今晚点下面的开始试试。").font(.footnote).foregroundStyle(Night.muted)
+                Text("还没有记录。今晚点下面的开始试试。").font(.subheadline).foregroundStyle(.secondary)
             }
             ForEach(model.log) { e in
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(e.text).font(.footnote).fixedSize(horizontal: false, vertical: true)
+                    Text(e.text).font(.subheadline).fixedSize(horizontal: false, vertical: true)
                     Text(e.date.formatted(date: .abbreviated, time: .standard))
-                        .font(.caption2).foregroundStyle(Night.muted)
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
         }
-        .nightCard()
     }
 
     private func status(_ title: String, _ ok: Bool) -> some View {
@@ -189,7 +181,7 @@ struct ContentView: View {
             Text(title)
             Spacer()
             Image(systemName: ok ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(ok ? Night.accent : Night.muted)
+                .foregroundStyle(ok ? Color.indigo : Color.secondary)
                 .accessibilityLabel(ok ? "是" : "否")
         }
     }
@@ -198,25 +190,26 @@ struct ContentView: View {
 struct MorningCard: View {
     var summary: MorningSummary
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("早上好", systemImage: "sun.max.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.orange)
             HStack {
-                Text("早上好").font(.headline)
-                Spacer()
+                Text(summary.headline)
+                    .font(.title3.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 8)
                 if let r = summary.latencyRating {
                     Text(r)
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(Night.onAccent)
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(Night.accent, in: RoundedRectangle(cornerRadius: 2))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.indigo)
                 }
             }
-            Text(summary.headline).font(.title3.weight(.bold)).fixedSize(horizontal: false, vertical: true)
             ForEach(summary.lines, id: \.self) { line in
-                Text(line).font(.footnote).foregroundStyle(Night.muted).fixedSize(horizontal: false, vertical: true)
+                Text(line).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
             if summary.noiseLeq != nil && !summary.noiseVerified { UnverifiedBadge(text: "噪音来自未验证的 201D") }
         }
-        .nightCard()
     }
 }
 
@@ -226,10 +219,13 @@ struct SleepSoundsCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("助眠声音").font(.headline)
+                    Label("助眠声音", systemImage: sounds.color.symbol)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.indigo)
+                    Text(sounds.color.label)
+                        .font(.system(.title2, design: .rounded).weight(.bold))
                     Text(sounds.isFading ? "正在淡出…" : sounds.isPlaying ? "播放中，睡着后自动淡出" : "实时生成，不循环")
-                        .font(.caption).foregroundStyle(Night.muted)
-                    Text(sounds.color.label).font(.subheadline.weight(.semibold))
+                        .font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 8)
                 Button {
@@ -237,12 +233,11 @@ struct SleepSoundsCard: View {
                     Haptics.night()
                 } label: {
                     Image(systemName: sounds.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.title3)
                         .frame(width: 44, height: 44)
-                        .background(Night.accent, in: Circle())
-                        .foregroundStyle(Night.onAccent)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.circle)
+                .tint(.indigo)
                 .accessibilityLabel(sounds.isPlaying ? "停止助眠声音" : "播放助眠声音")
             }
             Picker("声音", selection: $sounds.color) {
@@ -250,9 +245,9 @@ struct SleepSoundsCard: View {
             }
             .pickerStyle(.segmented)
             HStack {
-                Image(systemName: "speaker.fill").foregroundStyle(Night.muted)
+                Image(systemName: "speaker.fill").foregroundStyle(.secondary)
                 Slider(value: $sounds.volume, in: 0.05...0.8)
-                Image(systemName: "speaker.wave.3.fill").foregroundStyle(Night.muted)
+                Image(systemName: "speaker.wave.3.fill").foregroundStyle(.secondary)
             }
             Stepper("入睡后 \(Int(sounds.fadeSeconds)) 秒淡出", value: $sounds.fadeSeconds, in: 15...600, step: 15)
                 .font(.subheadline)
@@ -264,7 +259,6 @@ struct SleepSoundsCard: View {
             }
             .font(.subheadline)
         }
-        .nightCard()
     }
 }
 
@@ -274,57 +268,61 @@ struct AchievementsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(alignment: .top, spacing: 10) {
-                        ForEach(StreakKind.allCases, id: \.self) { k in
-                            let s = extras.streaks[k] ?? Streak(current: 0, best: 0)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(k.label).font(.caption.weight(.bold)).foregroundStyle(Night.muted)
+            List {
+                Section {
+                    ForEach(StreakKind.allCases, id: \.self) { k in
+                        let s = extras.streaks[k] ?? Streak(current: 0, best: 0)
+                        HStack {
+                            Label(k.label, systemImage: k.symbol)
+                                .foregroundStyle(k == .focus ? Color.orange : Color.indigo)
+                            Spacer()
+                            VStack(alignment: .trailing, spacing: 2) {
                                 Text("\(s.current) 天")
-                                    .font(.system(.title2, design: .rounded).weight(.bold))
+                                    .font(.system(.title3, design: .rounded).weight(.bold))
                                     .monospacedDigit()
-                                    .minimumScaleFactor(0.6)
-                                    .lineLimit(1)
-                                Text("最长 \(s.best) 天").font(.caption2).foregroundStyle(Night.muted)
+                                Text("最长 \(s.best) 天")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
-                            .nightCard()
                         }
                     }
-                    Text("成就").font(.title3.weight(.bold))
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 12)], spacing: 12) {
-                        ForEach(Achievement.allCases, id: \.self) { a in
-                            let date = extras.unlocked[a]
-                            VStack(alignment: .leading, spacing: 6) {
-                                Image(systemName: date == nil ? "square" : "circle.fill")
-                                    .foregroundStyle(date == nil ? Night.muted : Night.accent)
-                                Text(a.title).font(.subheadline.weight(.bold)).fixedSize(horizontal: false, vertical: true)
-                                Text(a.detail).font(.caption2).foregroundStyle(Night.muted).fixedSize(horizontal: false, vertical: true)
+                }
+                Section("成就") {
+                    ForEach(Achievement.allCases, id: \.self) { a in
+                        let date = extras.unlocked[a]
+                        HStack(alignment: .top, spacing: 12) {
+                            Image(systemName: a.symbol)
+                                .font(.title3)
+                                .foregroundStyle(date == nil ? Color.secondary : Color.indigo)
+                                .frame(width: 32)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(a.title).font(.headline)
+                                Text(a.detail).font(.caption).foregroundStyle(.secondary)
                                 if a.usesUnverifiedData { UnverifiedBadge() }
                                 if let date {
                                     Text(date.formatted(date: .abbreviated, time: .omitted))
-                                        .font(.caption2).foregroundStyle(Night.muted)
+                                        .font(.caption).foregroundStyle(.secondary)
                                 }
                             }
-                            .frame(maxWidth: .infinity, minHeight: 140, alignment: .topLeading)
-                            .nightCard()
-                            .opacity(date == nil ? 0.7 : 1)
-                            .accessibilityElement(children: .combine)
                         }
+                        .opacity(date == nil ? 0.7 : 1)
+                        .accessibilityElement(children: .combine)
                     }
-                    Text("* 清新通勤依赖未验证的 201D 读数；读不到时只是不会解锁。安静日用耳机播放音量或环境噪音，不需要 Zone。")
-                        .font(.caption).foregroundStyle(Night.muted)
                 }
-                .padding(20)
+                Section {
+                    Text("清新通勤依赖未验证的 201D 读数；读不到时只是不会解锁。安静日用耳机播放音量或环境噪音，不需要 Zone。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
-            .background(Night.ground)
-            .foregroundStyle(Night.ink)
+            .listStyle(.insetGrouped)
             .navigationTitle("连续与成就")
-            .toolbarBackground(Night.ground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .navigationBarTitleDisplayMode(.large)
+            .tint(.indigo)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.touchTarget() } }
         }
         .preferredColorScheme(.dark)
+        .presentationDragIndicator(.visible)
     }
 }
 
@@ -333,27 +331,29 @@ struct NoiseDoseCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("今日噪音").font(.headline)
             DoseBar(percent: noise.mergedToday.isEmpty ? nil : noise.mergedDosePercent)
+            Text(LevelPalette.loudLabel(noise.mergedToday.map(\.leq).max()))
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
             Text(noise.doseCaption)
                 .font(.caption)
-                .foregroundStyle(Night.muted)
+                .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+            NoiseTrendChart(minutes: noise.mergedToday)
             Text(NoiseMerge.rule)
-                .font(.caption2)
-                .foregroundStyle(Night.muted)
+                .font(.caption)
+                .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             if let aside = noise.zoneAmbientAside {
                 Text(aside)
                     .font(.caption)
-                    .foregroundStyle(Night.muted)
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if noise.mergedToday.contains(where: { $0.origin == .zone }) {
                 UnverifiedBadge(text: "Zone 环境读数未验证")
             }
         }
-        .nightCard()
         .task { await noise.refreshHealth() }
     }
 }
@@ -364,7 +364,9 @@ struct HeadphonePicker: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("我的耳机").font(.headline)
+            Label("我的耳机", systemImage: "headphones")
+                .font(.headline)
+                .foregroundStyle(.indigo)
             if let suggested, suggested != headphones.kind {
                 Button("检测到\(suggested.title)，用这个建议") {
                     headphones.kind = suggested
@@ -379,7 +381,8 @@ struct HeadphonePicker: View {
                     Haptics.select()
                 } label: {
                     HStack(alignment: .top, spacing: 10) {
-                        Image(systemName: headphones.kind == kind ? "largecircle.fill.circle" : "circle")
+                        Image(systemName: headphones.kind == kind ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(headphones.kind == kind ? Color.indigo : Color.secondary)
                             .frame(width: 28)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(kind.title).font(.body.weight(.semibold))

@@ -59,7 +59,7 @@ struct NowRunningAccessory: View {
     var body: some View {
         HStack(spacing: 10) {
             if focus.session.isActive {
-                Image(systemName: "timer").foregroundStyle(Palette.blue)
+                Image(systemName: "timer").foregroundStyle(.orange)
                 TimelineView(.periodic(from: .now, by: 1)) { ctx in
                     let rem = Int(focus.session.remaining(at: ctx.date))
                     Text("\(focus.session.phase.label) \(String(format: "%02d:%02d", rem / 60, rem % 60))")
@@ -74,7 +74,7 @@ struct NowRunningAccessory: View {
                 }
                 .accessibilityLabel(focus.session.isPaused ? "继续专注" : "暂停专注")
             } else if model.isArmed {
-                Image(systemName: "moon.zzz.fill").foregroundStyle(Palette.red)
+                Image(systemName: "moon.zzz.fill").foregroundStyle(.indigo)
                 Text(placement == .inline ? "守候中" : "守候中 · 降噪保持开启")
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)

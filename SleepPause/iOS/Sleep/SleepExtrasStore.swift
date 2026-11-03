@@ -11,6 +11,12 @@ final class SleepExtrasStore: ObservableObject {
     @Published private(set) var unlocked: [Achievement: Date] = [:]
     @Published var justUnlocked: Achievement?
 
+    /// Recent detected sleep-onset times, oldest first, for the Health-style chart.
+    var recentOnsets: [Date] {
+        let raw = (d.array(forKey: "sleep.onsets") as? [Double] ?? []).map { Date(timeIntervalSince1970: $0) }
+        return Array(raw.suffix(14))
+    }
+
     private let d = UserDefaults.standard
     private init() {
         if let data = d.data(forKey: "morning.last"), let m = try? JSONDecoder().decode(MorningSummary.self, from: data) { morning = m }

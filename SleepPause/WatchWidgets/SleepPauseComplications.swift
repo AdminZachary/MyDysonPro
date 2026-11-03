@@ -30,7 +30,7 @@ struct SleepStatusComplication: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "SleepStatus", provider: WatchProvider()) { e in
             ComplicationView(entry: e)
-                .containerBackground(Color(red: 0x11 / 255, green: 0x0C / 255, blue: 0x0A / 255), for: .widget)
+                .containerBackground(for: .widget) { AccessoryWidgetBackground() }
         }
         .configurationDisplayName("SleepPause")
         .description("监测状态和智能闹钟")

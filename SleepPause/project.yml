@@ -38,6 +38,7 @@ targets:
       - sdk: UserNotifications.framework
       - sdk: AppIntents.framework
       - sdk: Security.framework
+      - sdk: Charts.framework
     settings:
       base:
         PRODUCT_NAME: SleepPause

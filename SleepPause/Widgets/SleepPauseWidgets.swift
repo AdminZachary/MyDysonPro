@@ -139,7 +139,7 @@ struct ZoneWidgetView: View {
 }
 
 extension ZoneWidgetView {
-    /// Full colour: geometric mark. Accented / vibrant: a 4-step bar so the level survives desaturation.
+    /// Full colour: the Health symbol. Accented rendering: a variable bar so the level still reads.
     @ViewBuilder
     func levelMark(_ level: Int?, fullColor: Bool) -> some View {
         if fullColor {
@@ -206,11 +206,7 @@ struct ZoneLiveActivityWidget: Widget {
             } compactTrailing: {
                 Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
             }             minimal: {
-                if s.showsAir {
-                    Circle().fill(levelColor(s.airLevel))
-                } else {
-                    Image(systemName: "headphones")
-                }
+                Image(systemName: s.showsAir ? LevelPalette.symbol(s.airLevel) : "headphones")
             }
         }
     }

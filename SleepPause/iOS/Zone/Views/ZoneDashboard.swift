@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// At-a-glance Zone home: breathing air orb, animated noise-dose ring, battery / ANC / wear chips.
+/// Zone home in the Health summary style: air, noise dose, and status.
 /// Every value degrades to "–" and unverified sources carry a badge.
 struct ZoneDashboard: View {
     @ObservedObject var zone = ZoneManager.shared
@@ -119,9 +119,6 @@ struct ZoneDashboard: View {
             if s.worn != nil { Text("* 佩戴状态来自未验证的 2004 字段").font(.caption2).foregroundStyle(Palette.secondaryInk) }
             if let n = auto.lastBoostNote { Text(n).font(.caption).foregroundStyle(Palette.secondaryInk) }
         }
-        .padding(16)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.hairline, lineWidth: 1))
     }
 
     private func controlGrid<Content: View>(glassID: String, @ViewBuilder content: () -> Content) -> some View {

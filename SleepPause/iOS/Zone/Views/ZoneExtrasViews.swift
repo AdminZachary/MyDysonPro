@@ -53,6 +53,7 @@ struct WeeklyReportView: View {
                     Section("概要") { ForEach(r.summaryLines(), id: \.self) { Text($0) } }
                     if !r.days.isEmpty {
                         Section("每日噪音剂量") {
+                            WeeklyDoseChart(days: r.days)
                             ForEach(r.days, id: \.day) { d in
                                 HStack {
                                     Text(d.day.formatted(.dateTime.weekday(.wide).locale(Locale(identifier: "zh_CN"))))
@@ -67,6 +68,7 @@ struct WeeklyReportView: View {
                 }
             }
             .navigationTitle("上周报告")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
         }
     }
@@ -93,7 +95,7 @@ struct FocusView: View {
                                 .minimumScaleFactor(0.5)
                                 .lineLimit(1)
                             Text("已完成 \(focus.session.completedFocusCycles) 个番茄 · 今天专注 \(Int(focus.todayMinutes)) 分钟")
-                                .font(.caption).foregroundStyle(Palette.secondaryInk)
+                                .font(.caption).foregroundStyle(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -133,7 +135,8 @@ struct FocusView: View {
                 }
             }
             .navigationTitle("专注")
-            .paperBackdrop(Palette.blue)
+            .navigationBarTitleDisplayMode(.large)
+            .paperBackdrop()
             .safeAreaInset(edge: .bottom, spacing: 0) { focusActions }
         }
     }
@@ -157,7 +160,7 @@ struct FocusView: View {
                     .frame(maxWidth: .infinity)
             }
             .glassButton(prominent: true)
-            .tint(Palette.blue)
+            .tint(.orange)
             .touchTarget()
         }
         .padding(.horizontal, 20)

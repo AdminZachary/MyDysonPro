@@ -12,24 +12,15 @@ struct ContentView: View {
                 else if monitor.isRunning || isDetected { BedtimeView() }
                 else { IdleView() }
             }
-            .containerBackground(WatchPalette.ground, for: .navigation)
-            .foregroundStyle(WatchPalette.ink)
-            .tint(WatchPalette.accent)
+            .containerBackground(for: .navigation) {
+                LinearGradient(colors: [Color.indigo, Color.black], startPoint: .top, endPoint: .bottom)
+            }
+            .foregroundStyle(.primary)
+            .tint(.indigo)
         }
     }
 
     private var isDetected: Bool { if case .detected = monitor.state { return true }; return false }
-}
-
-/// Warm, dim bedtime colors. Same hexes as `Night` in the iOS theme. No blue-white.
-enum WatchPalette {
-    static let ground = Color(red: 0x11 / 255.0, green: 0x0C / 255.0, blue: 0x0A / 255.0)
-    static let surface = Color(red: 0x1C / 255.0, green: 0x14 / 255.0, blue: 0x10 / 255.0)
-    static let ink = Color(red: 0xE7 / 255.0, green: 0xC7 / 255.0, blue: 0xA8 / 255.0)
-    static let muted = Color(red: 0xB8 / 255.0, green: 0x9A / 255.0, blue: 0x80 / 255.0)
-    static let accent = Color(red: 0xD4 / 255.0, green: 0x78 / 255.0, blue: 0x48 / 255.0)
-    static let onAccent = Color(red: 0x11 / 255.0, green: 0x0C / 255.0, blue: 0x0A / 255.0)
-    static let danger = Color(red: 0xC9 / 255.0, green: 0x6B / 255.0, blue: 0x5A / 255.0)
 }
 
 struct IdleView: View {
@@ -39,19 +30,18 @@ struct IdleView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                Circle()
-                    .fill(WatchPalette.accent)
-                    .frame(width: 18, height: 18)
+                Image(systemName: "bed.double.fill")
+                    .font(.title2)
+                    .foregroundStyle(.indigo)
                     .accessibilityHidden(true)
                 if case .error(let msg) = monitor.state {
-                    Text(msg).font(.footnote).foregroundStyle(WatchPalette.danger).multilineTextAlignment(.center)
+                    Text(msg).font(.footnote).foregroundStyle(.red).multilineTextAlignment(.center)
                 }
                 Button { monitor.start() } label: {
-                    Label("开始今晚监测", systemImage: "bed.double.fill").frame(maxWidth: .infinity, minHeight: 40)
+                    Label("开始今晚监测", systemImage: "bed.double.fill").frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .watchGlassButton(prominent: true)
-                .tint(WatchPalette.accent)
-                .foregroundStyle(WatchPalette.onAccent)
+                .tint(.indigo)
                 NavigationLink { AlarmSettingsView() } label: {
                     Label(settings.alarm.enabled ? String(format: "智能闹钟 %02d:%02d", settings.alarm.hour, settings.alarm.minute) : "智能闹钟：关",
                           systemImage: settings.alarm.enabled ? "alarm.fill" : "alarm")
@@ -79,14 +69,12 @@ struct BedtimeView: View {
                         .monospacedDigit()
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
-                        .foregroundStyle(WatchPalette.ink)
                     Text("/ \(Int(settings.stillMinutes)) 静止分钟")
                         .font(.caption2)
-                        .foregroundStyle(WatchPalette.muted)
+                        .foregroundStyle(.secondary)
                     HStack(spacing: 6) {
-                        Circle()
-                            .fill(isMoving ? WatchPalette.danger : WatchPalette.accent)
-                            .frame(width: 10, height: 10)
+                        Image(systemName: isMoving ? "figure.walk" : "moon.zzz.fill")
+                            .foregroundStyle(isMoving ? Color.red : Color.indigo)
                         Text(isMoving ? "在动" : "静止")
                             .font(.caption2.weight(.semibold))
                     }
@@ -94,8 +82,8 @@ struct BedtimeView: View {
                 }
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
-                        Capsule().fill(WatchPalette.surface)
-                        Capsule().fill(WatchPalette.accent).frame(width: max(8, geo.size.width * stillFraction))
+                        Capsule().fill(.white.opacity(0.18))
+                        Capsule().fill(.indigo).frame(width: max(8, geo.size.width * stillFraction))
                     }
                 }
                 .frame(height: 8)
@@ -106,24 +94,23 @@ struct BedtimeView: View {
                           systemImage: "alarm").font(.caption2).foregroundStyle(.secondary)
                 }
                 Button(role: .destructive) { monitor.stop() } label: {
-                    Text("停止监测").frame(maxWidth: .infinity, minHeight: 40)
+                    Text("停止监测").frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.bordered)
-                .tint(WatchPalette.danger)
+                .tint(.red)
                 .padding(.top, 8)
             }
         }
-        .foregroundStyle(WatchPalette.ink)
     }
 
     @ViewBuilder private var header: some View {
         switch monitor.state {
         case .detected(let d):
             Label("已入睡 \(d.formatted(date: .omitted, time: .shortened))", systemImage: "checkmark.seal.fill")
-                .font(.footnote).foregroundStyle(WatchPalette.accent)
+                .font(.footnote).foregroundStyle(.indigo)
         default:
             if case .collectingBaseline? = monitor.status?.phase {
-                Text("采集清醒心率基线…").font(.footnote).foregroundStyle(WatchPalette.accent)
+                Text("采集清醒心率基线…").font(.footnote).foregroundStyle(.indigo)
             } else {
                 Text("监测中 · 放轻松").font(.footnote).foregroundStyle(.secondary)
             }
@@ -143,26 +130,26 @@ struct BedtimeView: View {
         let met = monitor.status?.hrConditionMet ?? false
         return VStack(spacing: 3) {
             HStack {
-                Image(systemName: "heart.fill").foregroundStyle(WatchPalette.accent)
+                Image(systemName: "heart.fill").foregroundStyle(.indigo)
                 Text(cur.map { "\(Int($0))" } ?? "–").font(.headline).monospacedDigit()
                 Text(target.map { "目标 ≤\(Int($0))" } ?? "基线采集中").font(.caption2).foregroundStyle(.secondary)
                 Spacer()
-                Image(systemName: met ? "checkmark.circle.fill" : "circle.dotted").foregroundStyle(met ? WatchPalette.accent : WatchPalette.muted)
+                Image(systemName: met ? "checkmark.circle.fill" : "circle.dotted").foregroundStyle(met ? Color.indigo : Color.secondary)
             }
             GeometryReader { g in
                 let lo = (target ?? 50) - 15, hi = (base ?? 80) + 10
                 let x = cur.map { CGFloat(($0 - lo) / max(1, hi - lo)) } ?? 0
                 let tx = target.map { CGFloat(($0 - lo) / max(1, hi - lo)) } ?? 0.5
                 ZStack(alignment: .leading) {
-                    Capsule().fill(WatchPalette.surface)
-                    Capsule().fill(WatchPalette.accent).frame(width: max(6, min(1, max(0, x)) * g.size.width))
-                    Rectangle().fill(WatchPalette.ink).frame(width: 2).offset(x: min(1, max(0, tx)) * g.size.width)
+                    Capsule().fill(.white.opacity(0.18))
+                    Capsule().fill(.indigo).frame(width: max(6, min(1, max(0, x)) * g.size.width))
+                    Rectangle().fill(.primary).frame(width: 2).offset(x: min(1, max(0, tx)) * g.size.width)
                 }
             }
             .frame(height: 6)
         }
         .padding(.horizontal, 8).padding(.vertical, 6)
-        .background(WatchPalette.surface, in: RoundedRectangle(cornerRadius: 4))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 }
@@ -171,15 +158,14 @@ struct WakeView: View {
     @EnvironmentObject var monitor: SleepMonitor
     var body: some View {
         VStack(spacing: 10) {
-            Circle().fill(WatchPalette.accent).frame(width: 22, height: 22).accessibilityHidden(true)
+            Image(systemName: "sun.max.fill").font(.title2).foregroundStyle(.orange).accessibilityHidden(true)
             Text("早上好").font(.title2.bold())
-            Text("在浅睡时叫醒你").font(.footnote).foregroundStyle(WatchPalette.muted)
+            Text("在浅睡时叫醒你").font(.footnote).foregroundStyle(.secondary)
             Button { monitor.dismissAlarm() } label: {
-                Text("我醒了").frame(maxWidth: .infinity, minHeight: 40)
+                Text("我醒了").frame(maxWidth: .infinity, minHeight: 44)
             }
             .watchGlassButton(prominent: true)
-            .tint(WatchPalette.accent)
-            .foregroundStyle(WatchPalette.onAccent)
+            .tint(.indigo)
         }
     }
 }

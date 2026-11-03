@@ -64,6 +64,7 @@ struct CommuteMapView: View {
                 }
             }
             .navigationTitle("通勤污染地图")
+            .navigationBarTitleDisplayMode(.large)
         }
     }
 
@@ -86,12 +87,10 @@ struct CommuteMapView: View {
                     ForEach(0..<4, id: \.self) { level in
                         LevelMark(level: level, showsName: false)
                     }
-                    Text(metric.label).font(.caption.weight(.semibold)).foregroundStyle(Palette.ink)
+                    Text(metric.label).font(.caption.weight(.semibold))
                 }
                 .padding(.horizontal, 12).padding(.vertical, 8)
-                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 4))
-                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.hairline, lineWidth: 1))
-                .accessibilityLabel("圆点好，方块一般，三角偏高，叉号差")
+                .accessibilityLabel("好、一般、偏高、差")
             }
         }
     }
