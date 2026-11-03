@@ -29,7 +29,11 @@ enum ScreenshotFixtures {
         UIView.setAnimationsEnabled(false)
         ZoneManager.shared.applyScreenshotFixture()
         NoiseExposureStore.shared.applyScreenshotFixture(dosePercent: 35)
-        FocusManager.shared.applyScreenshotFixture()
+        if ScreenshotMode.screen == "focus" {
+            FocusManager.shared.applyScreenshotFixture()
+        } else {
+            FocusManager.shared.applyScreenshotHistory()
+        }
         _ = ZoneAutomations.shared.buildLastWeek()
         AppModel.shared.applyScreenshotFixture(armed: screen == "sleep")
     }

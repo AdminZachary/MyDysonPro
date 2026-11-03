@@ -232,10 +232,23 @@ boot "$WATCH_UDID"
 prepare_language "$WATCH_UDID"
 codesign --force --deep --sign - "$WATCH_APP"
 xcrun simctl install "$WATCH_UDID" "$WATCH_APP"
-for appearance in light dark; do
-  for screen in idle bedtime; do
-    shot "$WATCH_UDID" com.example.sleeppause.watchkitapp "$screen" "$appearance" "$OUT/watch-${screen}-${appearance}.png"
-  done
+# watchOS 27's simulator rejects `simctl ui appearance` ("userInterfaceStyle" unsupported).
+# The watch UI is the dark Sleep / Workout style, so one capture per screen is the real image.
+for screen in idle bedtime; do
+  xcrun simctl terminate "$WATCH_UDID" com.example.sleeppause.watchkitapp >/dev/null 2>&1 || true
+  xcrun simctl launch "$WATCH_UDID" com.example.sleeppause.watchkitapp \
+    -screenshotMode -screenshotScreen "$screen" \
+    -AppleLanguages "(zh-Hans)" -AppleLocale "zh_CN"
+  sleep 6
+  capture_png "$WATCH_UDID" "$OUT/watch-${screen}.png"
+  python3 - "$OUT/watch-${screen}.png" << 'PY'
+import sys
+from pathlib import Path
+p = Path(sys.argv[1])
+if not p.exists() or p.stat().st_size < 20000:
+    sys.exit(f"screenshot too small or missing: {p}")
+print(f"OK {p.name} {p.stat().st_size} bytes")
+PY
 done
 
 xcrun simctl shutdown "$PHONE_UDID" >/dev/null 2>&1 || true

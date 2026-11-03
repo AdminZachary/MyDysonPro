@@ -21,10 +21,8 @@ final class FocusManager: ObservableObject {
 
     var zone: ZoneManager { ZoneManager.shared }
 
-    func applyScreenshotFixture() {
-        var next = FocusSession()
-        next.loadPreview(remaining: 24 * 60 + 18, cycles: 2, at: Date())
-        session = next
+    /// Past sessions for the weekly report. Does not start a live timer.
+    func applyScreenshotHistory() {
         let cal = Calendar.current
         let week = WeeklyReport.previousWeek(now: Date(), calendar: cal)
         log = (0..<4).compactMap { offset in
@@ -32,6 +30,13 @@ final class FocusManager: ObservableObject {
         }
         log.append(LogItem(date: Date().addingTimeInterval(-3600), minutes: 25))
         log.append(LogItem(date: Date().addingTimeInterval(-1800), minutes: 25))
+    }
+
+    func applyScreenshotFixture() {
+        applyScreenshotHistory()
+        var next = FocusSession()
+        next.loadPreview(remaining: 24 * 60 + 18, cycles: 2, at: Date())
+        session = next
     }
 
     func start() {
