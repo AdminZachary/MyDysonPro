@@ -46,6 +46,17 @@ final class AppModel: ObservableObject {
 
     // MARK: Nightly flow
 
+    func applyScreenshotFixture(armed: Bool) {
+        isArmed = armed
+        if let ts = UserDefaults.standard.object(forKey: "lastOnset") as? Double {
+            lastOnset = Date(timeIntervalSince1970: ts)
+        }
+        watchPaired = true
+        watchAppInstalled = true
+        watchReachable = true
+        add("示例：昨晚检测到入睡，降噪保持开启")
+    }
+
     /// Arm the silent audio keep-alive on the phone and launch the watch workout.
     func startTonight() async {
         do {
@@ -192,6 +203,7 @@ final class AppModel: ObservableObject {
     // MARK: Helpers
 
     func refreshWatchState() {
+        guard !ScreenshotMode.isActive else { return }
         let c = PhoneConnector.shared
         watchPaired = c.isPaired
         watchAppInstalled = c.isWatchAppInstalled

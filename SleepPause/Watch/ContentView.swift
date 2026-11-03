@@ -15,7 +15,8 @@ struct ContentView: View {
             .containerBackground(for: .navigation) {
                 LinearGradient(colors: [Color.indigo, Color.black], startPoint: .top, endPoint: .bottom)
             }
-            .foregroundStyle(.primary)
+            .preferredColorScheme(.dark)
+            .foregroundStyle(.white)
             .tint(.indigo)
         }
     }

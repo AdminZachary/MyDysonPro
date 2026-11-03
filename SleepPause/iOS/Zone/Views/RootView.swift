@@ -10,15 +10,27 @@ struct RootView: View {
     /// Show the bottom accessory only while something is actually running.
     private var hasLiveStatus: Bool { model.isArmed || focus.session.isActive || sounds.isPlaying }
 
+    private enum Tab: Hashable { case sleep, zone, focus, commute }
+    @State private var tab: Tab = .sleep
+    @State private var showWeeklyReport = false
+
     var body: some View {
-        TabView {
-            ContentView().tabItem { Label("睡眠", systemImage: "moon.zzz") }
+        if ScreenshotMode.screen == "widget", ScreenshotMode.isActive {
+            WidgetScreenshotPage()
+        } else {
+            tabs
+        }
+    }
+
+    private var tabs: some View {
+        TabView(selection: $tab) {
+            ContentView().tabItem { Label("睡眠", systemImage: "moon.zzz") }.tag(Tab.sleep)
             if headphones.usesZone {
-                ZoneView().tabItem { Label("Zone", systemImage: "headphones") }
+                ZoneView().tabItem { Label("Zone", systemImage: "headphones") }.tag(Tab.zone)
             }
-            FocusView().tabItem { Label("专注", systemImage: "timer") }
+            FocusView().tabItem { Label("专注", systemImage: "timer") }.tag(Tab.focus)
             if headphones.usesZone {
-                CommuteMapView().tabItem { Label("通勤地图", systemImage: "map") }
+                CommuteMapView().tabItem { Label("通勤地图", systemImage: "map") }.tag(Tab.commute)
             }
         }
         // No custom tab-bar background: the system Liquid Glass bar is used as-is.
@@ -26,6 +38,18 @@ struct RootView: View {
         .modifier(GlassTabChrome(enabled: hasLiveStatus))
         .fullScreenCover(isPresented: Binding(get: { !onboardingDone }, set: { onboardingDone = !$0 })) {
             OnboardingView().environmentObject(AppModel.shared)
+        }
+        .sheet(isPresented: $showWeeklyReport) {
+            WeeklyReportView(report: ZoneAutomations.shared.lastReport)
+                .interactiveDismissDisabled()
+        }
+        .onAppear {
+            switch ScreenshotMode.screen {
+            case "zone", "weekly": tab = .zone
+            case "focus": tab = .focus
+            default: tab = .sleep
+            }
+            showWeeklyReport = ScreenshotMode.isActive && ScreenshotMode.screen == "weekly"
         }
     }
 }

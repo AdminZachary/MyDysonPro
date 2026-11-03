@@ -21,6 +21,19 @@ final class FocusManager: ObservableObject {
 
     var zone: ZoneManager { ZoneManager.shared }
 
+    func applyScreenshotFixture() {
+        var next = FocusSession()
+        next.loadPreview(remaining: 24 * 60 + 18, cycles: 2, at: Date())
+        session = next
+        let cal = Calendar.current
+        let week = WeeklyReport.previousWeek(now: Date(), calendar: cal)
+        log = (0..<4).compactMap { offset in
+            cal.date(byAdding: .day, value: offset, to: week.start).map { LogItem(date: $0.addingTimeInterval(9 * 3600), minutes: 25) }
+        }
+        log.append(LogItem(date: Date().addingTimeInterval(-3600), minutes: 25))
+        log.append(LogItem(date: Date().addingTimeInterval(-1800), minutes: 25))
+    }
+
     func start() {
         guard !zone.adaptive.isSleepHeld(at: Date()) else {
             AppModel.shared.add("睡眠监测进行中，不能开始专注（保持当前降噪）")

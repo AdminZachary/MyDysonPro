@@ -18,7 +18,7 @@ struct NoiseTrendChart: View {
                 .interpolationMethod(.catmullRom)
             }
             .chartForegroundStyleScale(
-                [NoiseOrigin.headphone.detail, NoiseOrigin.zone.detail, NoiseOrigin.watch.detail],
+                domain: [NoiseOrigin.headphone.detail, NoiseOrigin.zone.detail, NoiseOrigin.watch.detail],
                 range: [Color.orange, Color.teal, Color.indigo]
             )
             .chartYScale(domain: 30...110)

@@ -5,6 +5,10 @@ final class SleepPauseAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         MainActor.assumeIsolated {
+            if ScreenshotMode.isActive {
+                ScreenshotFixtures.install()
+                return
+            }
             // Wire the optional Dyson Zone module. bootstrap() must run at launch so that
             // CoreBluetooth state restoration (relaunch in background) can hand the peripheral back.
             let zone = ZoneManager.shared
@@ -26,6 +30,7 @@ final class SleepPauseAppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        guard !ScreenshotMode.isActive else { return }
         Task { await NoiseExposureStore.shared.refreshHealth() }
     }
 }

@@ -12,6 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             List {
                 Section { hero }
                 if let m = extras.morning, Date().timeIntervalSince(m.wake) < 18 * 3600 {
@@ -26,7 +27,7 @@ struct ContentView: View {
                 }
                 Section { streakStrip }
                 Section { testCard }
-                Section { optionsCard }
+                Section { optionsCard.id("headphones") }
                 Section { watchCard }
                 Section { logCard }
             }
@@ -38,11 +39,19 @@ struct ContentView: View {
             .minimizingNavigationBar()
             .safeAreaInset(edge: .bottom, spacing: 0) { primaryAction }
             .brightness(model.isArmed ? -0.08 : 0)
-            .onAppear { model.refreshWatchState(); extras.refreshAchievements(notify: false) }
+            .onAppear {
+                model.refreshWatchState()
+                extras.refreshAchievements(notify: false)
+                guard ScreenshotMode.screen == "headphones" else { return }
+                DispatchQueue.main.async {
+                    proxy.scrollTo("headphones", anchor: .top)
+                }
+            }
             .sheet(isPresented: $showAchievements) { AchievementsView() }
             .sensoryFeedback(.impact(weight: .light, intensity: 0.35), trigger: extras.justUnlocked)
+            }
         }
-        .preferredColorScheme(.dark)
+        .modifier(SleepAppearance())
         .animation(reduceMotion ? nil : .smooth, value: model.isArmed)
     }
 
@@ -183,6 +192,17 @@ struct ContentView: View {
             Image(systemName: ok ? "checkmark.circle.fill" : "circle")
                 .foregroundStyle(ok ? Color.indigo : Color.secondary)
                 .accessibilityLabel(ok ? "是" : "否")
+        }
+    }
+}
+
+/// Health Sleep is dark. Screenshot runs of the other screens keep the simulator appearance.
+private struct SleepAppearance: ViewModifier {
+    func body(content: Content) -> some View {
+        if ScreenshotMode.isActive && ScreenshotMode.screen != "sleep" {
+            content
+        } else {
+            content.preferredColorScheme(.dark)
         }
     }
 }

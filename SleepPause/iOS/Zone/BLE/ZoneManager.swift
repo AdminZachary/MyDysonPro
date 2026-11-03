@@ -70,6 +70,22 @@ final class ZoneManager: NSObject, ObservableObject {
 
     var isReady: Bool { state == .ready }
 
+    /// Connected sample for screenshots. Does not open Bluetooth.
+    func applyScreenshotFixture() {
+        state = .ready
+        batteryPercent = 72
+        charging = 0
+        fanSpeed = 1
+        fanActual = 1
+        fanAuto = false
+        ancMode = .anc
+        worn = true
+        lastReading = ZoneAQReading(
+            date: Date(), raw: "", layoutName: ZoneAQLayout.current.name, layoutVerified: false,
+            vocPpb: 120, no2Ppb: 18, no2AQI: 20, temperatureC: 23, humidityPercent: 45,
+            inEarDb: 55, ambientDb: 62, audioDb: 40)
+    }
+
     // MARK: Lifecycle
 
     /// Call at launch (also when iOS relaunches us for BLE state restoration).

@@ -97,6 +97,7 @@ final class NoiseExposureStore: ObservableObject {
     /// Reads headphone playback level and Apple Watch environmental noise from Health.
     /// Samples this app wrote (metadata `SleepPauseSource`) are skipped so Zone data is not counted twice.
     func refreshHealth() async {
+        guard !ScreenshotMode.isActive else { return }
         guard HKHealthStore.isHealthDataAvailable() else { return }
         let headphone = HKQuantityType(.headphoneAudioExposure)
         let start = Calendar.current.date(byAdding: .day, value: -8, to: Date()) ?? Date()
@@ -118,7 +119,38 @@ final class NoiseExposureStore: ObservableObject {
         mergedAll.filter { Calendar.current.isDateInToday($0.start) }
     }
 
-    var mergedDosePercent: Double { NoiseMerge.dosePercent(mergedToday) }
+    private var previewDosePercent: Double?
+    var mergedDosePercent: Double { previewDosePercent ?? NoiseMerge.dosePercent(mergedToday) }
+
+    /// Today's curve sits near 62 dB. The dose number is the sample the screenshots ask for.
+    func applyScreenshotFixture(dosePercent: Double) {
+        previewDosePercent = dosePercent
+        minutes = Self.screenshotMinutes()
+    }
+
+    private static func screenshotMinutes() -> [MinuteSample] {
+        let cal = Calendar.current
+        var rows: [MinuteSample] = []
+        let start = cal.startOfDay(for: Date())
+        var cursor = start
+        while cursor < Date() {
+            let hour = cal.component(.hour, from: cursor)
+            let leq = 62.0 + (hour % 2 == 0 ? -4 : 3)
+            rows.append(MinuteSample(start: cursor, leq: leq, savedToHealth: false))
+            guard let next = cal.date(byAdding: .minute, value: 30, to: cursor) else { break }
+            cursor = next
+        }
+        let week = WeeklyReport.previousWeek(now: Date(), calendar: cal)
+        let doses = [12, 28, 18, 35, 22, 40, 16]
+        for (offset, minutesAt85) in doses.enumerated() {
+            guard let day = cal.date(byAdding: .day, value: offset, to: week.start) else { continue }
+            for minute in 0..<minutesAt85 {
+                let stamp = day.addingTimeInterval(8 * 3600 + Double(minute) * 60)
+                rows.append(MinuteSample(start: stamp, leq: 95, savedToHealth: false))
+            }
+        }
+        return rows
+    }
 
     var mergedLex: Double? {
         let energy = mergedToday.reduce(0.0) { $0 + pow(10, $1.leq / 10) * 60 }

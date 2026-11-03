@@ -67,6 +67,24 @@ final class SleepMonitor: NSObject, ObservableObject {
 
     // MARK: Start / stop
 
+    func applyScreenshot(bedtime: Bool) {
+        alarmFiring = false
+        if bedtime {
+            state = .running
+            startedAt = Date().addingTimeInterval(-20 * 60)
+            lastHR = 58
+            movement = 0.004
+            status = SleepDetectorStatus(
+                phase: .monitoring, baselineHR: 68, currentHR: 58,
+                stillMinutes: 8, hrConditionMet: true, stillConditionMet: false)
+        } else {
+            state = .idle
+            status = nil
+            lastHR = nil
+            movement = nil
+        }
+    }
+
     func start() {
         guard !isRunning else { return }
         state = .starting

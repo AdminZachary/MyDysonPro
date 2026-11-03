@@ -49,6 +49,17 @@ struct FocusSession: Codable, Equatable {
         return max(0, (phaseEndsAt ?? now).timeIntervalSince(now))
     }
 
+    /// A running focus phase for screenshots, without starting timers or ANC writes.
+    mutating func loadPreview(remaining: TimeInterval, cycles: Int, at now: Date) {
+        phase = .focus
+        phaseEndsAt = now.addingTimeInterval(remaining)
+        pausedRemaining = nil
+        pausedBecauseUnworn = false
+        completedFocusCycles = cycles
+        focusedSeconds = Double(cycles) * duration(of: .focus)
+        lastTick = now
+    }
+
     mutating func start(at now: Date) {
         phase = .focus; phaseEndsAt = now.addingTimeInterval(duration(of: .focus))
         pausedRemaining = nil; pausedBecauseUnworn = false

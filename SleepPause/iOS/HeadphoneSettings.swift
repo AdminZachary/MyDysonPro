@@ -22,6 +22,7 @@ final class HeadphoneSettings: ObservableObject {
     }
 
     func apply() {
+        guard !ScreenshotMode.isActive else { return }
         if kind.usesZone {
             if !ZoneSettings.shared.moduleEnabled {
                 ZoneSettings.shared.moduleEnabled = true

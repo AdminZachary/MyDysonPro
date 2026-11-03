@@ -4,6 +4,12 @@ import HealthKit
 
 final class WatchAppDelegate: NSObject, WKApplicationDelegate {
     func applicationDidFinishLaunching() {
+        if ScreenshotMode.isActive {
+            MainActor.assumeIsolated {
+                SleepMonitor.shared.applyScreenshot(bedtime: ScreenshotMode.screen == "bedtime")
+            }
+            return
+        }
         WatchConnector.shared.activate()
         Task { @MainActor in SleepMonitor.shared.publishComplication() }
     }
