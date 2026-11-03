@@ -30,13 +30,13 @@ struct ZoneStatusWidget: Widget {
 }
 
 struct ZoneWidgetView: View {
+    var entry: ZoneEntry
     /// Set when the app renders this view for a screenshot. WidgetKit's environment key is read-only outside a widget.
     var familyOverride: WidgetFamily? = nil
     var renderingOverride: WidgetRenderingMode? = nil
     @Environment(\.widgetFamily) private var environmentFamily
     /// `.accented` on a tinted Home Screen: colour is stripped, so the level also uses a symbol.
     @Environment(\.widgetRenderingMode) private var environmentRendering
-    var entry: ZoneEntry
 
     private var family: WidgetFamily { familyOverride ?? environmentFamily }
     private var renderingMode: WidgetRenderingMode { renderingOverride ?? environmentRendering }
