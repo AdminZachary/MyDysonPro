@@ -54,7 +54,9 @@ def existing(runtime, pred):
 
 def iphone_key(name):
     number = max([int(n) for n in re.findall(r"\d+", name)] or [0])
-    if re.search(r"Pro Max|Pro-Max", name):
+    if "Duo" in name:
+        rank = 5
+    elif re.search(r"Pro Max|Pro-Max", name):
         rank = 1
     elif re.search(r"\bPro\b", name):
         rank = 0
@@ -74,7 +76,12 @@ def watch_key(name):
 
 ios = newest("iOS")
 watch = newest("watchOS")
-phones = existing(ios, lambda n: "iPhone" in n and "Pro" in n)
+print("iOS devices:", file=sys.stderr)
+for dev in existing(ios, lambda n: "iPhone" in n):
+    print(f"  {dev.get('name')}", file=sys.stderr)
+phones = existing(ios, lambda n: "iPhone" in n and re.search(r"\bPro\b", n) and "Duo" not in n)
+if not phones:
+    phones = existing(ios, lambda n: n.startswith("iPhone") and "Duo" not in n)
 if not phones:
     phones = existing(ios, lambda n: n.startswith("iPhone"))
 watches = existing(watch, lambda n: "Watch" in n)
@@ -134,6 +141,25 @@ prepare_language() {
   xcrun simctl bootstatus "$udid" -b
 }
 
+# iPhone Duo (and any future dual-screen device) needs an explicit display.
+capture_png() {
+  local udid="$1" dest="$2"
+  local err id
+  if err=$(xcrun simctl io "$udid" screenshot "$dest" 2>&1); then
+    return 0
+  fi
+  id=$(printf '%s\n' "$err" | sed -n 's/.*--display=\([0-9][0-9]*\).*LCD (primary).*/\1/p' | head -n 1)
+  if [[ -z "$id" ]]; then
+    id=$(printf '%s\n' "$err" | sed -n 's/.*--display=\([0-9][0-9]*\).*/\1/p' | head -n 1)
+  fi
+  if [[ -z "$id" ]]; then
+    printf '%s\n' "$err" >&2
+    return 1
+  fi
+  echo "using display $id"
+  xcrun simctl io "$udid" screenshot --display="$id" "$dest"
+}
+
 shot() {
   local udid="$1" bundle="$2" screen="$3" appearance="$4" dest="$5"
   xcrun simctl ui "$udid" appearance "$appearance"
@@ -142,7 +168,7 @@ shot() {
     -screenshotMode -screenshotScreen "$screen" \
     -AppleLanguages "(zh-Hans)" -AppleLocale "zh_CN"
   sleep 6
-  xcrun simctl io "$udid" screenshot "$dest"
+  capture_png "$udid" "$dest"
   python3 - "$dest" << 'PY'
 import sys
 from pathlib import Path
