@@ -37,8 +37,7 @@ struct ZoneStatusWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "ZoneStatus", provider: ZoneProvider()) { entry in
             ZoneWidgetView(entry: entry)
-                .environment(\.colorScheme, .dark)      // dark-first: gradient background, light text
-                .containerBackground(for: .widget) { LevelPalette.background(entry.snapshot?.airLevel) }
+                .containerBackground(for: .widget) { LevelPalette.canvas }
         }
         .configurationDisplayName("Zone 空气与噪音")
         .description("电量、降噪模式、空气和环境噪音。")
@@ -58,6 +57,7 @@ struct ZoneWidgetView: View {
     var body: some View {
         let s = entry.snapshot
         let stale = s?.isStale(at: entry.date) ?? true
+        let fullColor = renderingMode == .fullColor
         switch family {
         case .accessoryInline:
             Text(s.map { "\($0.airText) · \($0.noiseText)" } ?? "Zone –")
@@ -66,46 +66,57 @@ struct ZoneWidgetView: View {
                 currentValueLabel: { Text(s?.battery.map(String.init) ?? "–") }
                 .gaugeStyle(.accessoryCircular)
         case .accessoryRectangular:
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Zone \(s?.batteryText ?? "–")").font(.headline)
-                Text("\(s?.airText ?? "空气 –") · \(s?.noiseText ?? "–")")
+                HStack(spacing: 6) {
+                    if fullColor { LevelMark(level: s?.airLevel, showsName: false) }
+                    Text(s?.airText ?? "空气 –")
+                }
+                Text(s?.noiseText ?? "–")
                 if let p = s?.focusPhase, let end = s?.focusEndsAt { Text("\(p) ") + Text(end, style: .timer) }
             }
         default:
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Image(systemName: s?.airLevel.map { $0 <= 1 ? "leaf.fill" : "aqi.high" } ?? "headphones")
-                        .font(.title3).widgetAccentable()
-                    Text(s?.batteryText ?? "–").bold()
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(s?.battery.map { "\($0)" } ?? "–")
+                        .font(.system(.title2, design: .rounded).weight(.bold))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.6)
+                        .widgetAccentable()
+                    Text("%").font(.caption).foregroundStyle(LevelPalette.secondary)
                     Spacer()
-                    Text(s?.ancLabel ?? "–").font(.caption)
+                    Text(s?.ancLabel ?? "–").font(.caption.weight(.semibold))
                 }
-                HStack {
-                    levelMark(s?.airLevel)
-                    Text(s?.airText ?? "空气 –")
+                HStack(spacing: 6) {
+                    levelMark(s?.airLevel, fullColor: fullColor)
+                    Text(s?.airText ?? "空气 –").font(.subheadline.weight(.semibold))
                 }
-                HStack {
-                    levelMark(s?.ambientDb.map(ZoneSnapshot.noiseLevel))
-                    Text("噪音 \(s?.noiseText ?? "–")")
+                HStack(spacing: 6) {
+                    levelMark(s?.ambientDb.map(ZoneSnapshot.noiseLevel), fullColor: fullColor)
+                    Text(s?.ambientDb.map { String(format: "%.0f dB", $0) } ?? "– dB")
+                        .font(.system(.title3, design: .rounded).weight(.bold))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.6)
                 }
                 if family == .systemMedium, let d = s?.dosePercent {
                     Text(String(format: "今日噪音剂量 %.0f%%", d)).font(.caption)
                 }
                 if let s, !s.layoutVerified, s.airLevel != nil || s.ambientDb != nil {
-                    Text("读数布局未验证").font(.caption2).foregroundStyle(.secondary)
+                    Text("读数布局未验证").font(.caption2).foregroundStyle(LevelPalette.secondary)
                 }
-                if stale { Text(s == nil ? "打开 App 连接 Zone" : "数据已过期").font(.caption2).foregroundStyle(.secondary) }
+                if stale { Text(s == nil ? "打开 App 连接 Zone" : "数据已过期").font(.caption2).foregroundStyle(LevelPalette.secondary) }
             }
+            .foregroundStyle(LevelPalette.ink)
         }
     }
 }
 
 extension ZoneWidgetView {
-    /// Full colour: a coloured dot. Accented / vibrant: a 4-step bar glyph so the level survives desaturation.
+    /// Full colour: geometric mark. Accented / vibrant: a 4-step bar so the level survives desaturation.
     @ViewBuilder
-    func levelMark(_ level: Int?) -> some View {
-        if renderingMode == .fullColor {
-            Circle().fill(levelColor(level)).frame(width: 10, height: 10)
+    func levelMark(_ level: Int?, fullColor: Bool) -> some View {
+        if fullColor {
+            LevelMark(level: level, showsName: false).widgetAccentable()
         } else {
             Image(systemName: "chart.bar.fill", variableValue: level.map { Double($0 + 1) / 4 } ?? 0)
                 .font(.caption).widgetAccentable()
@@ -117,20 +128,25 @@ struct ZoneLiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ZoneActivityAttributes.self) { context in
             let s = context.state.snapshot
-            HStack {
-                VStack(alignment: .leading) {
+            HStack(alignment: .center, spacing: 12) {
+                LevelMark(level: s.airLevel, showsName: true)
+                VStack(alignment: .leading, spacing: 2) {
                     Text(context.attributes.title).font(.headline)
-                    Text(s.spokenSummary).font(.caption).lineLimit(2)
+                    Text(s.spokenSummary).font(.caption).lineLimit(3).minimumScaleFactor(0.8)
                 }
-                Spacer()
+                Spacer(minLength: 8)
+                Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
+                    .font(.system(.title2, design: .rounded).weight(.bold))
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.6)
                 if let p = s.focusPhase, let end = s.focusEndsAt {
-                    VStack { Text(p).font(.caption); Text(end, style: .timer).monospacedDigit() }
+                    VStack(alignment: .trailing) { Text(p).font(.caption); Text(end, style: .timer).monospacedDigit() }
                 }
             }
             .padding()
-            .foregroundStyle(.white)
-            .background(LevelPalette.background(s.airLevel))
-            .activityBackgroundTint(LevelPalette.night)
+            .foregroundStyle(LevelPalette.ink)
+            .background(LevelPalette.canvas)
+            .activityBackgroundTint(LevelPalette.canvas)
         } dynamicIsland: { context in
             let s = context.state.snapshot
             return DynamicIsland {

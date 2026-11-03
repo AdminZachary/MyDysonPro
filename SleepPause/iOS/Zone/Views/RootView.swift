@@ -54,40 +54,47 @@ struct NowRunningAccessory: View {
     var body: some View {
         HStack(spacing: 10) {
             if focus.session.isActive {
-                Image(systemName: "timer").foregroundStyle(Palette.focus)
-                    .symbolEffect(.pulse, options: .repeating, isActive: !focus.session.isPaused)
+                Image(systemName: "timer").foregroundStyle(Palette.blue)
                 TimelineView(.periodic(from: .now, by: 1)) { ctx in
                     let rem = Int(focus.session.remaining(at: ctx.date))
                     Text("\(focus.session.phase.label) \(String(format: "%02d:%02d", rem / 60, rem % 60))")
-                        .monospacedDigit().lineLimit(1)
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(1)
                 }
                 Spacer(minLength: 4)
                 Button { focus.togglePause(); Haptics.tap() } label: {
                     Image(systemName: focus.session.isPaused ? "play.fill" : "pause.fill")
-                        .contentTransition(.symbolEffect(.replace))
+                        .frame(width: 44, height: 44)
                 }
                 .accessibilityLabel(focus.session.isPaused ? "继续专注" : "暂停专注")
             } else if model.isArmed {
-                Image(systemName: "moon.zzz.fill").foregroundStyle(Palette.moon)
-                    .symbolEffect(.pulse, options: .repeating)
-                Text(placement == .inline ? "守候中" : "守候中 · 降噪保持开启").lineLimit(1)
+                Image(systemName: "moon.zzz.fill").foregroundStyle(Palette.red)
+                Text(placement == .inline ? "守候中" : "守候中 · 降噪保持开启")
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
                 Spacer(minLength: 4)
                 if sounds.isPlaying, placement != .inline {
-                    Image(systemName: sounds.color.symbol).foregroundStyle(.secondary)
-                        .symbolEffect(.variableColor.iterative, options: .repeating)
+                    Image(systemName: sounds.color.symbol).foregroundStyle(Palette.secondaryInk)
                 }
-                Button { model.stopTonight(); Haptics.tap() } label: { Image(systemName: "stop.fill") }
-                    .accessibilityLabel("停止守候")
+                Button { model.stopTonight(); Haptics.night() } label: {
+                    Image(systemName: "stop.fill").frame(width: 44, height: 44)
+                }
+                .accessibilityLabel("停止守候")
             } else if sounds.isPlaying {
-                Image(systemName: sounds.color.symbol).foregroundStyle(.indigo)
-                    .symbolEffect(.variableColor.iterative, options: .repeating)
-                Text(sounds.isFading ? "正在淡出…" : sounds.color.label).lineLimit(1)
+                    Image(systemName: sounds.color.symbol).foregroundStyle(Palette.blue)
+                Text(sounds.isFading ? "正在淡出…" : sounds.color.label)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
                 Spacer(minLength: 4)
-                Button { sounds.fadeOutAndStop(seconds: 3); Haptics.tap() } label: { Image(systemName: "pause.fill") }
-                    .accessibilityLabel("停止助眠声音")
+                Button { sounds.fadeOutAndStop(seconds: 3); Haptics.night() } label: {
+                    Image(systemName: "pause.fill").frame(width: 44, height: 44)
+                }
+                .accessibilityLabel("停止助眠声音")
             }
         }
         .font(.subheadline.weight(.semibold))
+        .foregroundStyle(Palette.ink)
         .padding(.horizontal, 16)
     }
 }

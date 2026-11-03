@@ -28,7 +28,7 @@ grep -q 'BASE_BUNDLE_ID: com.example.sleeppause' project.yml
 echo "=== logic checks (project test harness; there is no XCTest target) ==="
 set +e
 set +o pipefail
-SWIFTC="$(xcrun -f swiftc)" bash scripts/linux-check.sh 2>&1 | tee "$LOGS/logic-checks.log"
+SWIFTC="$(xcrun -f swiftc)" SWIFT_SDK="$(xcrun --sdk macosx --show-sdk-path)" bash scripts/linux-check.sh 2>&1 | tee "$LOGS/logic-checks.log"
 logic_status=${PIPESTATUS[0]}
 set -o pipefail
 set -e

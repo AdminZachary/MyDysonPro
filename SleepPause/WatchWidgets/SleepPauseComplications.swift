@@ -29,7 +29,8 @@ struct WatchProvider: TimelineProvider {
 struct SleepStatusComplication: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "SleepStatus", provider: WatchProvider()) { e in
-            ComplicationView(entry: e).containerBackground(Color(red: 0.06, green: 0.06, blue: 0.18).gradient, for: .widget)
+            ComplicationView(entry: e)
+                .containerBackground(Color(red: 0x11 / 255, green: 0x0C / 255, blue: 0x0A / 255), for: .widget)
         }
         .configurationDisplayName("SleepPause")
         .description("监测状态和智能闹钟")

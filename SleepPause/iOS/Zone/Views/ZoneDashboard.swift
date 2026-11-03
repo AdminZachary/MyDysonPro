@@ -18,13 +18,13 @@ struct ZoneDashboard: View {
                        actionTitle: "登录 Dyson 账号", action: onLogin).card()
         case .bluetoothOff(let why):
             StatePanel(symbol: "antenna.radiowaves.left.and.right.slash", title: why,
-                       message: "到“设置 → 蓝牙”打开蓝牙，并允许 SleepPause 使用蓝牙。", tint: .orange).card(tint: .orange)
+                       message: "到“设置 → 蓝牙”打开蓝牙，并允许 SleepPause 使用蓝牙。", tint: Palette.yellow).card(tint: Palette.yellow)
         case .busyElsewhere:
             StatePanel(symbol: "rectangle.2.swap", title: "Zone 被其他 App 占用",
-                       message: "彻底退出 MyDyson（上滑关掉），Zone 同一时间只接受一个控制端。", tint: .orange).card(tint: .orange)
+                       message: "彻底退出 MyDyson（上滑关掉），Zone 同一时间只接受一个控制端。", tint: Palette.yellow).card(tint: Palette.yellow)
         case .failed(let msg):
-            StatePanel(symbol: "exclamationmark.triangle.fill", title: "连接失败", message: msg, tint: .red,
-                       actionTitle: "重试", action: { zone.bootstrap() }).card(tint: .red)
+            StatePanel(symbol: "exclamationmark.triangle.fill", title: "连接失败", message: msg, tint: Palette.red,
+                       actionTitle: "重试", action: { zone.bootstrap() }).card(tint: Palette.red)
         case .searching, .connecting, .authenticating, .disabled:
             HStack(spacing: 14) {
                 ProgressView()
@@ -48,80 +48,85 @@ struct ZoneDashboard: View {
     private var ready: some View {
         let s = snapshot
         let noiseLevel = s.ambientDb.map(ZoneSnapshot.noiseLevel)
-        return VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .center, spacing: 16) {
-                BreathingOrb(level: s.airLevel, label: s.airLevel.map { "空气" + Palette.levelNames[$0] } ?? "空气 –",
-                             sublabel: s.no2Ppb.map { String(format: "NO₂ %.0f ppb", $0) })
-                Spacer(minLength: 0)
-                DoseRing(percent: noise.today.dosePercent)
+        return VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 16) {
+                AirOrb(level: s.airLevel, label: s.airLevel.map { "空气" + Palette.levelNames[$0] } ?? "空气 –",
+                       sublabel: s.no2Ppb.map { String(format: "NO₂ %.0f ppb", $0) })
+                Spacer(minLength: 8)
+                DoseBar(percent: noise.today.dosePercent).frame(maxWidth: 180)
             }
-            HStack(spacing: 8) {
-                Image(systemName: "ear").foregroundStyle(.white)
-                Text(s.ambientDb.map { String(format: "环境 %.0f dB", $0) } ?? "环境噪音 –")
-                    .font(.title3.weight(.semibold)).monospacedDigit()
-                    .contentTransition(.numericText())
-                if let noiseLevel { Circle().fill(Palette.level(noiseLevel)).frame(width: 8, height: 8) }
-                Spacer()
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
+                    .font(.system(.title, design: .rounded).weight(.bold))
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                Text("dB 环境").font(.subheadline).foregroundStyle(Palette.secondaryInk)
+                LevelMark(level: noiseLevel)
+                Spacer(minLength: 8)
                 if !s.layoutVerified && (s.ambientDb != nil || s.airLevel != nil) { UnverifiedBadge(text: "201D 未验证") }
             }
-            .foregroundStyle(.white)
-            // Functional layer: all chips + quick controls share ONE glass container so they
-            // sample the same backdrop and can merge / split.
-            GlassGroup(spacing: 10) {
-                VStack(alignment: .leading, spacing: 10) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            Chip(symbol: batterySymbol(s.battery), text: s.batteryText,
-                                 tint: (s.battery ?? 100) <= 20 ? .red : .green)
-                            Button { toggle(.anc) } label: {
-                                Chip(symbol: "waveform.circle", text: s.ancLabel ?? "降噪 –", tint: .indigo)
-                            }
-                            .buttonStyle(.plain).glassID("anc", in: glassNS)
-                            .accessibilityHint("展开降噪模式")
-                            Button { toggle(.fan) } label: {
-                                Chip(symbol: "fan", text: zone.fanActual.map { "风扇 \($0)" } ?? "风扇 –", tint: .teal)
-                            }
-                            .buttonStyle(.plain).glassID("fan", in: glassNS)
-                            .accessibilityHint("展开风扇档位")
-                            if let w = s.worn {
-                                Chip(symbol: w ? "person.fill.checkmark" : "person.fill.xmark", text: w ? "已佩戴*" : "未佩戴*", tint: .gray)
-                            }
-                            if let f = s.focusPhase { Chip(symbol: "timer", text: f, tint: Palette.focus) }
+            // Controls only: glass buttons. Status chips stay flat.
+            VStack(alignment: .leading, spacing: 10) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        Chip(symbol: batterySymbol(s.battery), text: s.batteryText,
+                             tint: (s.battery ?? 100) <= 20 ? Palette.red : Palette.blue)
+                        Button { toggle(.anc) } label: {
+                            Chip(symbol: "waveform.circle", text: s.ancLabel ?? "降噪 –", tint: Palette.blue)
+                                .touchTarget()
                         }
-                        .padding(.vertical, 2)
+                        .buttonStyle(.plain).glassID("anc", in: glassNS)
+                        .accessibilityHint("展开降噪模式")
+                        Button { toggle(.fan) } label: {
+                            Chip(symbol: "fan", text: zone.fanActual.map { "风扇 \($0)" } ?? "风扇 –", tint: Palette.blue)
+                                .touchTarget()
+                        }
+                        .buttonStyle(.plain).glassID("fan", in: glassNS)
+                        .accessibilityHint("展开风扇档位")
+                        if let w = s.worn {
+                            Chip(symbol: w ? "checkmark" : "xmark", text: w ? "已佩戴*" : "未佩戴*", tint: Palette.secondaryInk)
+                        }
+                        if let f = s.focusPhase { Chip(symbol: "timer", text: f, tint: Palette.blue) }
                     }
-                    if expanded == .anc {
-                        HStack(spacing: 8) {
-                            ForEach(ZoneANCMode.allCases, id: \.self) { m in
-                                Button(m.label) { zone.setANC(m, manual: true); Haptics.select(); toggle(nil) }
-                                    .glassButton(prominent: zone.ancMode == m)
-                                    .tint(.indigo)
-                            }
+                    .padding(.vertical, 2)
+                }
+                if expanded == .anc {
+                    controlGrid(glassID: "anc.menu") {
+                        ForEach(ZoneANCMode.allCases, id: \.self) { m in
+                            Button(m.label) { zone.setANC(m, manual: true); Haptics.select(); toggle(nil) }
+                                .glassButton(prominent: zone.ancMode == m)
+                                .tint(Palette.blue)
+                                .touchTarget()
                         }
-                        .glassID("anc.menu", in: glassNS)
-                        .transition(.blurReplace)
                     }
-                    if expanded == .fan {
-                        HStack(spacing: 8) {
-                            ForEach(0..<4, id: \.self) { l in
-                                Button(["关", "静息", "轻度", "中度"][l]) { ZoneAutomations.shared.userSetFan(l); Haptics.select(); toggle(nil) }
-                                    .glassButton(prominent: zone.fanSpeed == l)
-                                    .tint(.teal)
-                            }
+                }
+                if expanded == .fan {
+                    controlGrid(glassID: "fan.menu") {
+                        ForEach(0..<4, id: \.self) { l in
+                            Button(["关", "静息", "轻度", "中度"][l]) { ZoneAutomations.shared.userSetFan(l); Haptics.select(); toggle(nil) }
+                                .glassButton(prominent: zone.fanSpeed == l)
+                                .tint(Palette.blue)
+                                .touchTarget()
                         }
-                        .glassID("fan.menu", in: glassNS)
-                        .transition(.blurReplace)
                     }
                 }
             }
-            if s.worn != nil { Text("* 佩戴状态来自未验证的 2004 字段").font(.caption2).foregroundStyle(.white.opacity(0.75)) }
-            if let n = auto.lastBoostNote { Label(n, systemImage: "wind").font(.caption).foregroundStyle(.white.opacity(0.8)) }
+            if s.worn != nil { Text("* 佩戴状态来自未验证的 2004 字段").font(.caption2).foregroundStyle(Palette.secondaryInk) }
+            if let n = auto.lastBoostNote { Text(n).font(.caption).foregroundStyle(Palette.secondaryInk) }
         }
         .padding(16)
-        // Content layer (not glass): a vivid air-level gradient the glass chips can refract.
-        .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Palette.levelBackdrop(s.airLevel)))
-        .environment(\.colorScheme, .dark)      // white text on the vivid backdrop in light mode too
-        .animation(.smooth, value: s.airLevel)
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.hairline, lineWidth: 1))
+    }
+
+    private func controlGrid<Content: View>(glassID: String, @ViewBuilder content: () -> Content) -> some View {
+        GlassGroup(spacing: 8) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                content()
+            }
+            .glassID(glassID, in: glassNS)
+        }
     }
 
     private func toggle(_ e: Expanded?) {

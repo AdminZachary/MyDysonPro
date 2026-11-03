@@ -24,7 +24,7 @@ struct ZoneView: View {
                     Toggle("启用 Dyson Zone 模块（非官方）", isOn: $settings.moduleEnabled)
                         .onChange(of: settings.moduleEnabled) { _, on in on ? zone.bootstrap() : zone.shutdown() }
                     Label("Zone 同一时间只接受一个控制端：使用本功能时请彻底退出 MyDyson（或关闭它的后台）。",
-                          systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(.orange)
+                          systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(Palette.red)
                 }
                 if settings.moduleEnabled {
                     statusSection
@@ -44,7 +44,7 @@ struct ZoneView: View {
                 }
             }
             .navigationTitle("Dyson Zone")
-            .vividBackdrop(backdropColor)
+            .paperBackdrop(Palette.blue)
             .minimizingNavigationBar()
             .refreshable { if !zone.isReady { zone.bootstrap() } }
             .sheet(isPresented: $showLogin) { ZoneLoginView() }
@@ -62,12 +62,6 @@ struct ZoneView: View {
         }
     }
 
-    /// Air-level colour wash behind the form (night indigo when there is no reading yet).
-    private var backdropColor: Color {
-        guard settings.moduleEnabled, let l = ZoneAutomations.shared.currentSnapshot().airLevel else { return Palette.dusk }
-        return Palette.level(l)
-    }
-
     private var visorText: String {
         switch zone.visor { case 0: return "未安装"; case 1: return "在位"; case 2: return "下翻"; case 3: return "无效"; default: return "–" }
     }
@@ -80,10 +74,16 @@ struct ZoneView: View {
             HStack {
                 Text("风扇")
                 Spacer(minLength: 4)
-                GlassGroup(spacing: 6) { HStack(spacing: 6) { ForEach(0..<4) { l in
-                    Button(["关", "静息", "轻度", "中度"][l]) { ZoneAutomations.shared.userSetFan(l); Haptics.select() }
-                        .glassButton(prominent: zone.fanSpeed == l).tint(.teal).controlSize(.small)
-                } } }
+                GlassGroup(spacing: 8) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                        ForEach(0..<4, id: \.self) { l in
+                            Button(["关", "静息", "轻度", "中度"][l]) { ZoneAutomations.shared.userSetFan(l); Haptics.select() }
+                                .glassButton(prominent: zone.fanSpeed == l)
+                                .tint(Palette.blue)
+                                .touchTarget()
+                        }
+                    }
+                }
             }
         }.disabled(!zone.isReady)
     }

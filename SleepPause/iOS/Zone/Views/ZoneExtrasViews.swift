@@ -73,7 +73,6 @@ struct WeeklyReportView: View {
 }
 
 struct FocusView: View {
-    @Namespace private var glassNS
     @ObservedObject var focus = FocusManager.shared
     @ObservedObject var settings = ZoneSettings.shared
     @ObservedObject var zone = ZoneManager.shared
@@ -84,43 +83,20 @@ struct FocusView: View {
                 Section {
                     TimelineView(.periodic(from: .now, by: 1)) { ctx in
                         let rem = Int(focus.session.remaining(at: ctx.date))
-                        VStack(spacing: 8) {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text(focus.session.isPaused ? "\(focus.session.phase.label)（暂停）" : focus.session.phase.label)
                                 .font(.headline)
                             Text(String(format: "%02d:%02d", rem / 60, rem % 60))
-                                .font(.system(size: 56, weight: .semibold, design: .rounded)).monospacedDigit()
+                                .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                                .monospacedDigit()
+                                .minimumScaleFactor(0.5)
+                                .lineLimit(1)
                             Text("已完成 \(focus.session.completedFocusCycles) 个番茄 · 今天专注 \(Int(focus.todayMinutes)) 分钟")
-                                .font(.caption).foregroundStyle(.secondary)
-                        }.frame(maxWidth: .infinity)
-                    }
-                    // One glass container: "开始" splits into "暂停/继续" + "结束" and merges back (iOS 26+ morph).
-                    GlassGroup(spacing: 12) {
-                        HStack(spacing: 12) {
-                            if focus.session.isActive {
-                                Button { focus.togglePause(); Haptics.tap() } label: {
-                                    Label(focus.session.isPaused ? "继续" : "暂停",
-                                          systemImage: focus.session.isPaused ? "play.fill" : "pause.fill")
-                                        .frame(maxWidth: .infinity)
-                                        .contentTransition(.symbolEffect(.replace))
-                                }
-                                .glassButton(prominent: true).tint(Palette.focus)
-                                .glassID("primary", in: glassNS)
-                                Button(role: .destructive) { withAnimation(.bouncy) { focus.stop() }; Haptics.warning() } label: {
-                                    Label("结束", systemImage: "stop.fill").frame(maxWidth: .infinity)
-                                }
-                                .glassButton()
-                                .glassID("stop", in: glassNS)
-                            } else {
-                                Button { withAnimation(.bouncy) { focus.start() } } label: {
-                                    Label("开始专注", systemImage: "play.fill").frame(maxWidth: .infinity)
-                                }
-                                .glassButton(prominent: true).tint(Palette.focus)
-                                .glassID("primary", in: glassNS)
-                            }
+                                .font(.caption).foregroundStyle(Palette.secondaryInk)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        .controlSize(.large)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .buttonStyle(.borderless)   // keep Form rows from swallowing taps; styles above still win per button
                     if !zone.isReady {
                         Text("Zone 未连接：计时照常进行，只是不会切换降噪/风扇。").font(.footnote).foregroundStyle(.secondary)
                     }
@@ -148,7 +124,35 @@ struct FocusView: View {
                 }
             }
             .navigationTitle("专注")
-            .vividBackdrop(Palette.focus)
+            .paperBackdrop(Palette.blue)
+            .safeAreaInset(edge: .bottom, spacing: 0) { focusActions }
         }
+    }
+
+    /// One primary control in the thumb zone. Ending the session is a separate destructive button.
+    private var focusActions: some View {
+        VStack(spacing: 8) {
+            if focus.session.isActive {
+                Button(role: .destructive) { focus.stop(); Haptics.warning() } label: {
+                    Label("结束", systemImage: "stop.fill").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .touchTarget()
+            }
+            Button {
+                if focus.session.isActive { focus.togglePause(); Haptics.tap() }
+                else { focus.start() }
+            } label: {
+                Label(focus.session.isActive ? (focus.session.isPaused ? "继续" : "暂停") : "开始专注",
+                      systemImage: focus.session.isActive ? (focus.session.isPaused ? "play.fill" : "pause.fill") : "play.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .glassButton(prominent: true)
+            .tint(Palette.blue)
+            .touchTarget()
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .background(Palette.canvas)
     }
 }

@@ -253,7 +253,7 @@ extension SleepMonitor {
         switch decision {
         case .none: break
         case .gentleTap:
-            WKInterfaceDevice.current().play(.directionUp)          // a light nudge out of deep sleep
+            WKInterfaceDevice.current().play(.click)                 // light nudge; brighter haptics wait for the alarm
         case .wake(let early):
             alarmFiring = true
             startAlarmHaptics()
@@ -277,7 +277,9 @@ extension SleepMonitor {
     private func alarmHapticTick() {
         alarmHapticCount += 1
         // gentle at first, stronger after ~30 s; give up after ~3 min
-        WKInterfaceDevice.current().play(alarmHapticCount < 12 ? .directionUp : .notification)
+        // Night haptics stay soft. The alarm still repeats, but each tap is a click,
+        // then a slightly stronger direction cue — not a full notification buzz.
+        WKInterfaceDevice.current().play(alarmHapticCount < 12 ? .click : .directionUp)
         if alarmHapticCount > 72 { alarmHapticTimer?.invalidate(); alarmHapticTimer = nil }
     }
 

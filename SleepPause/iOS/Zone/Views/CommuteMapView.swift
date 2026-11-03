@@ -41,7 +41,7 @@ struct CommuteMapView: View {
                             ForEach(CommuteMetric.allCases, id: \.self) { Text($0.label).tag($0) }
                         }.pickerStyle(.segmented)
                         if !ZoneAQLayout.current.isVerified {
-                            Text("⚠️ 读数来自未验证的 201D 布局").font(.caption).foregroundStyle(.orange)
+                            Text("读数来自未验证的 201D 布局").font(.caption).foregroundStyle(Palette.red)
                         }
                     }
                     Section("路线对比") {
@@ -80,16 +80,18 @@ struct CommuteMapView: View {
                         .symbolEffect(.pulse, options: .repeating, isActive: settings.commuteRecording)
                 }
                 .glassButton(prominent: settings.commuteRecording)
-                .tint(.red)
-                HStack(spacing: 6) {
-                    ForEach(0..<4, id: \.self) { l in
-                        Circle().fill(Palette.level(l)).frame(width: 10, height: 10)
+                .tint(Palette.red)
+                .touchTarget()
+                HStack(spacing: 8) {
+                    ForEach(0..<4, id: \.self) { level in
+                        LevelMark(level: level, showsName: false)
                     }
-                    Text(metric.label).font(.caption.weight(.semibold))
+                    Text(metric.label).font(.caption.weight(.semibold)).foregroundStyle(Palette.ink)
                 }
-                .padding(.horizontal, 12).padding(.vertical, 9)
-                .glassSurface(Capsule())
-                .accessibilityLabel("颜色从绿到红表示由好到差")
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 4))
+                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.hairline, lineWidth: 1))
+                .accessibilityLabel("圆点好，方块一般，三角偏高，叉号差")
             }
         }
     }
@@ -98,6 +100,6 @@ struct CommuteMapView: View {
     private func fmt(_ v: Double?) -> String { v.map { String(format: "%.0f", $0) } ?? "–" }
     private func color(for p: CommutePoint) -> Color {
         guard let v = metric.value(p) else { return .gray }
-        return [Color.green, .yellow, .orange, .red][metric.level(v)]
+        return Palette.level(metric.level(v))
     }
 }
