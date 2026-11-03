@@ -81,41 +81,7 @@ func runExtrasChecks() -> Int {
     ck(BatteryAlertPolicy.bedtimeWarning(percent: 25) != nil && BatteryAlertPolicy.bedtimeWarning(percent: 60) == nil
        && BatteryAlertPolicy.bedtimeWarning(percent: nil) == nil, "bedtime battery warning")
 
-    // --- Weekly report
-    var cal = Calendar(identifier: .gregorian); cal.timeZone = TimeZone(identifier: "Asia/Shanghai")!
-    let now = cal.date(from: DateComponents(year: 2026, month: 11, day: 4, hour: 10))!   // Wed
-    let wk = WeeklyReport.previousWeek(now: now, calendar: cal)
-    ck(cal.component(.weekday, from: wk.start) == 2 && cal.component(.day, from: wk.start) == 26, "weekly: previous Mon 26 Oct")
-    let mon = wk.start
-    var noise: [(start: Date, leq: Double)] = []
-    for i in 0..<240 { noise.append((mon.addingTimeInterval(9 * 3600 + Double(i) * 60), 88)) }     // 4 h @ 88 dB ≈ 100 %
-    noise.append((mon.addingTimeInterval(-3600), 99))                                           // outside week
-    let route = CommuteRoute(name: "地铁", start: mon.addingTimeInterval(8 * 3600),
-                             points: [CommutePoint(lat: 0, lon: 0, date: mon, no2Ppb: 40, vocPpb: nil, ambientDb: nil)])
-    let route2 = CommuteRoute(name: "骑车", start: mon.addingTimeInterval(86400 + 8 * 3600),
-                              points: [CommutePoint(lat: 0, lon: 0, date: mon, no2Ppb: 20, vocPpb: nil, ambientDb: nil)])
-    let onsets = [23 * 60 + 30, 24 * 60 + 30, 23 * 60 + 50].map { mon.addingTimeInterval(Double($0) * 60) }
-    let focusSessions: [(date: Date, minutes: Double)] = [
-        (mon.addingTimeInterval(36000), 25),
-        (mon.addingTimeInterval(40000), 50)
-    ]
-    let routes = [route, route2]
-    let rep = WeeklyReport.build(week: wk, noiseMinutes: noise, routes: routes,
-                                 focus: focusSessions,
-                                 onsets: onsets, calendar: cal, layoutVerified: false)
-    ck(rep.noiseMinutes == 240 && rep.minutesAbove85 == 240, "weekly: noise minutes in week only")
-    ck(rep.days.count == 1 && abs(rep.days[0].dosePercent - 100) < 1, "weekly: 4 h @ 88 dB ≈ 100 % dose (got \(rep.days.first?.dosePercent ?? -1))")
-    ck(rep.commuteCount == 2 && rep.commuteMeanNO2 == 30 && rep.cleanestRoute == "骑车", "weekly: commute + cleanest route")
-    ck(rep.focusMinutes == 75 && rep.focusSessions == 2, "weekly: focus totals")
-    ck(rep.sleepOnsets == 3 && rep.medianOnsetMinuteOfDay == 23 * 60 + 50, "weekly: median onset across midnight 23:50")
-    ck(rep.summaryLines().contains { $0.contains("未验证") }, "weekly: unverified note")
-    let monday9 = cal.date(from: DateComponents(year: 2026, month: 11, day: 2, hour: 9, minute: 5))!
-    let monday8 = cal.date(from: DateComponents(year: 2026, month: 11, day: 2, hour: 8))!
-    ck(WeeklyReport.shouldSend(now: monday9, lastSentWeekStart: nil, calendar: cal)
-       && !WeeklyReport.shouldSend(now: monday8, lastSentWeekStart: nil, calendar: cal), "weekly: send on Monday after 9:00")
-    var c2 = cal; c2.firstWeekday = 2
-    let thisWeek = c2.dateInterval(of: .weekOfYear, for: monday9)!.start
-    ck(!WeeklyReport.shouldSend(now: now, lastSentWeekStart: thisWeek, calendar: cal), "weekly: once per week")
+    fails += runWeeklyReportChecks()
 
     // --- Snapshot
     var s = ZoneSnapshot.placeholder
@@ -130,5 +96,54 @@ func runExtrasChecks() -> Int {
     ck(s.spokenSummary == "Zone 未连接", "snapshot: disconnected")
     let enc = try? JSONDecoder().decode(ZoneSnapshot.self, from: JSONEncoder().encode(ZoneSnapshot.placeholder))
     ck(enc == ZoneSnapshot.placeholder, "snapshot: codable round trip")
+    return fails
+}
+
+func runWeeklyReportChecks() -> Int {
+    var fails = 0
+    func ck(_ c: Bool, _ m: String) { print(c ? "PASS  \(m)" : "FAIL  \(m)"); if !c { fails += 1 } }
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let now = cal.date(from: DateComponents(year: 2026, month: 11, day: 4, hour: 10))!
+    let wk = WeeklyReport.previousWeek(now: now, calendar: cal)
+    ck(cal.component(.weekday, from: wk.start) == 2 && cal.component(.day, from: wk.start) == 26, "weekly: previous Mon 26 Oct")
+    let mon = wk.start
+    var noise: [(start: Date, leq: Double)] = []
+    var i = 0
+    while i < 240 {
+        let start = mon.addingTimeInterval(9 * 3600 + Double(i) * 60)
+        noise.append((start, 88))
+        i += 1
+    }
+    noise.append((mon.addingTimeInterval(-3600), 99))
+    let p1 = CommutePoint(lat: 0, lon: 0, date: mon, no2Ppb: 40, vocPpb: nil, ambientDb: nil)
+    let p2 = CommutePoint(lat: 0, lon: 0, date: mon, no2Ppb: 20, vocPpb: nil, ambientDb: nil)
+    let route = CommuteRoute(name: "地铁", start: mon.addingTimeInterval(8 * 3600), points: [p1])
+    let route2 = CommuteRoute(name: "骑车", start: mon.addingTimeInterval(86400 + 8 * 3600), points: [p2])
+    let onsetA = mon.addingTimeInterval(Double(23 * 60 + 30) * 60)
+    let onsetB = mon.addingTimeInterval(Double(24 * 60 + 30) * 60)
+    let onsetC = mon.addingTimeInterval(Double(23 * 60 + 50) * 60)
+    let onsets = [onsetA, onsetB, onsetC]
+    let focusA = (date: mon.addingTimeInterval(36000), minutes: 25.0)
+    let focusB = (date: mon.addingTimeInterval(40000), minutes: 50.0)
+    let rep = WeeklyReport.build(week: wk, noiseMinutes: noise, routes: [route, route2],
+                                 focus: [focusA, focusB], onsets: onsets, calendar: cal, layoutVerified: false)
+    ck(rep.noiseMinutes == 240 && rep.minutesAbove85 == 240, "weekly: noise minutes in week only")
+    let dose = rep.days.first?.dosePercent ?? -1
+    ck(rep.days.count == 1 && abs(dose - 100) < 1, "weekly: 4 h @ 88 dB ≈ 100 % dose (got \(dose))")
+    ck(rep.commuteCount == 2 && rep.commuteMeanNO2 == 30 && rep.cleanestRoute == "骑车", "weekly: commute + cleanest route")
+    ck(rep.focusMinutes == 75 && rep.focusSessions == 2, "weekly: focus totals")
+    ck(rep.sleepOnsets == 3 && rep.medianOnsetMinuteOfDay == 23 * 60 + 50, "weekly: median onset across midnight 23:50")
+    let lines = rep.summaryLines()
+    ck(lines.contains { $0.contains("未验证") }, "weekly: unverified note")
+    let monday9 = cal.date(from: DateComponents(year: 2026, month: 11, day: 2, hour: 9, minute: 5))!
+    let monday8 = cal.date(from: DateComponents(year: 2026, month: 11, day: 2, hour: 8))!
+    let sendLate = WeeklyReport.shouldSend(now: monday9, lastSentWeekStart: nil, calendar: cal)
+    let sendEarly = WeeklyReport.shouldSend(now: monday8, lastSentWeekStart: nil, calendar: cal)
+    ck(sendLate && !sendEarly, "weekly: send on Monday after 9:00")
+    var c2 = cal
+    c2.firstWeekday = 2
+    let thisWeek = c2.dateInterval(of: .weekOfYear, for: monday9)!.start
+    ck(!WeeklyReport.shouldSend(now: now, lastSentWeekStart: thisWeek, calendar: cal), "weekly: once per week")
     return fails
 }
