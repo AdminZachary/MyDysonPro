@@ -132,26 +132,23 @@ struct StopFocusIntent: AppIntent {
 
 struct SleepPauseShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
-        var items: [AppShortcut] = [
-            AppShortcut(intent: StartSleepWatchIntent(), phrases: ["用 \(.applicationName) 开始今晚监测"],
-                        shortTitle: "开始今晚", systemImageName: "bed.double.fill"),
-            AppShortcut(intent: StartFocusIntent(), phrases: ["用 \(.applicationName) 开始专注"],
-                        shortTitle: "开始专注", systemImageName: "timer"),
-            AppShortcut(intent: StopFocusIntent(), phrases: ["用 \(.applicationName) 结束专注"],
-                        shortTitle: "结束专注", systemImageName: "stop.circle")
-        ]
+        AppShortcut(intent: StartSleepWatchIntent(), phrases: ["用 \(.applicationName) 开始今晚监测"],
+                    shortTitle: "开始今晚", systemImageName: "bed.double.fill")
+        AppShortcut(intent: StartFocusIntent(), phrases: ["用 \(.applicationName) 开始专注"],
+                    shortTitle: "开始专注", systemImageName: "timer")
+        AppShortcut(intent: StopFocusIntent(), phrases: ["用 \(.applicationName) 结束专注"],
+                    shortTitle: "结束专注", systemImageName: "stop.circle")
         if HeadphonePreference.usesZone() {
-            items.append(AppShortcut(intent: GetZoneBatteryIntent(), phrases: ["\(.applicationName) Zone 电量"],
-                                     shortTitle: "Zone 电量", systemImageName: "battery.75"))
-            items.append(AppShortcut(intent: GetZoneReadingIntent(), phrases: ["\(.applicationName) Zone 读数"],
-                                     shortTitle: "Zone 读数", systemImageName: "aqi.medium"))
-            items.append(AppShortcut(intent: SetZoneANCIntent(), phrases: ["用 \(.applicationName) 设置 Zone 降噪"],
-                                     shortTitle: "Zone 降噪", systemImageName: "ear"))
-            items.append(AppShortcut(intent: ZoneAirSummaryIntent(), phrases: ["\(.applicationName) 空气怎么样", "问 \(.applicationName) 空气怎么样"],
-                                     shortTitle: "空气怎么样", systemImageName: "aqi.low"))
-            items.append(AppShortcut(intent: SetZoneFanIntent(), phrases: ["用 \(.applicationName) 设置 Zone 风扇"],
-                                     shortTitle: "Zone 风扇", systemImageName: "wind"))
+            AppShortcut(intent: GetZoneBatteryIntent(), phrases: ["\(.applicationName) Zone 电量"],
+                        shortTitle: "Zone 电量", systemImageName: "battery.75")
+            AppShortcut(intent: GetZoneReadingIntent(), phrases: ["\(.applicationName) Zone 读数"],
+                        shortTitle: "Zone 读数", systemImageName: "aqi.medium")
+            AppShortcut(intent: SetZoneANCIntent(), phrases: ["用 \(.applicationName) 设置 Zone 降噪"],
+                        shortTitle: "Zone 降噪", systemImageName: "ear")
+            AppShortcut(intent: ZoneAirSummaryIntent(), phrases: ["\(.applicationName) 空气怎么样", "问 \(.applicationName) 空气怎么样"],
+                        shortTitle: "空气怎么样", systemImageName: "aqi.low")
+            AppShortcut(intent: SetZoneFanIntent(), phrases: ["用 \(.applicationName) 设置 Zone 风扇"],
+                        shortTitle: "Zone 风扇", systemImageName: "wind")
         }
-        return items
     }
 }
