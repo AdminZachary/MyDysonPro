@@ -60,12 +60,23 @@ struct ZoneWidgetView: View {
         let fullColor = renderingMode == .fullColor
         switch family {
         case .accessoryInline:
-            Text(s.map { "\($0.airText) · \($0.noiseText)" } ?? "Zone –")
+            if s?.showsAir == false {
+                Text((s?.doseLabel ?? "耳机播放音量") + " " + (s?.dosePercent.map { String(format: "%.0f%%", $0) } ?? "–"))
+            } else {
+                Text(s.map { "\($0.airText) · \($0.noiseText)" } ?? "Zone –")
+            }
         case .accessoryCircular:
             Gauge(value: Double(s?.battery ?? 0), in: 0...100) { Image(systemName: "headphones") }
                 currentValueLabel: { Text(s?.battery.map(String.init) ?? "–") }
                 .gaugeStyle(.accessoryCircular)
         case .accessoryRectangular:
+            if s?.showsAir == false {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(s?.doseLabel ?? "耳机播放音量").font(.headline)
+                    Text(s?.dosePercent.map { String(format: "剂量 %.0f%%", $0) } ?? "剂量 –")
+                    if let db = s?.ambientDb { Text(String(format: "%.0f dB", db)) }
+                }
+            } else {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Zone \(s?.batteryText ?? "–")").font(.headline)
                 HStack(spacing: 6) {
@@ -75,8 +86,23 @@ struct ZoneWidgetView: View {
                 Text(s?.noiseText ?? "–")
                 if let p = s?.focusPhase, let end = s?.focusEndsAt { Text("\(p) ") + Text(end, style: .timer) }
             }
+            }
         default:
             VStack(alignment: .leading, spacing: 6) {
+                if s?.showsAir == false {
+                    Text(s?.dosePercent.map { String(format: "%.0f%%", $0) } ?? "–")
+                        .font(.system(.title, design: .rounded).weight(.bold))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.6)
+                        .widgetAccentable()
+                    Text(s?.doseLabel ?? "耳机播放音量")
+                        .font(.caption.weight(.semibold))
+                    if let db = s?.ambientDb {
+                        Text(String(format: "%.0f dB", db))
+                            .font(.system(.title3, design: .rounded).weight(.bold))
+                            .monospacedDigit()
+                    }
+                } else {
                 HStack(alignment: .firstTextBaseline) {
                     Text(s?.battery.map { "\($0)" } ?? "–")
                         .font(.system(.title2, design: .rounded).weight(.bold))
@@ -104,7 +130,8 @@ struct ZoneWidgetView: View {
                 if let s, !s.layoutVerified, s.airLevel != nil || s.ambientDb != nil {
                     Text("读数布局未验证").font(.caption2).foregroundStyle(LevelPalette.secondary)
                 }
-                if stale { Text(s == nil ? "打开 App 连接 Zone" : "数据已过期").font(.caption2).foregroundStyle(LevelPalette.secondary) }
+                if stale { Text(s == nil ? "打开 App 连接" : "数据已过期").font(.caption2).foregroundStyle(LevelPalette.secondary) }
+                }
             }
             .foregroundStyle(LevelPalette.ink)
         }
@@ -129,10 +156,16 @@ struct ZoneLiveActivityWidget: Widget {
         ActivityConfiguration(for: ZoneActivityAttributes.self) { context in
             let s = context.state.snapshot
             HStack(alignment: .center, spacing: 12) {
-                LevelMark(level: s.airLevel, showsName: true)
+                if s.showsAir {
+                    LevelMark(level: s.airLevel, showsName: true)
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(context.attributes.title).font(.headline)
-                    Text(s.spokenSummary).font(.caption).lineLimit(3).minimumScaleFactor(0.8)
+                    Text(s.showsAir ? s.spokenSummary : (s.doseLabel ?? s.spokenSummary))
+                        .font(.caption).lineLimit(3).minimumScaleFactor(0.8)
+                    if !s.showsAir, let dose = s.dosePercent {
+                        Text(String(format: "剂量 %.0f%%", dose)).font(.headline).monospacedDigit()
+                    }
                 }
                 Spacer(minLength: 8)
                 Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
@@ -151,24 +184,33 @@ struct ZoneLiveActivityWidget: Widget {
             let s = context.state.snapshot
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(s.airText, systemImage: "aqi.medium").foregroundStyle(levelColor(s.airLevel))
+                    if s.showsAir {
+                        Label(s.airText, systemImage: "aqi.medium").foregroundStyle(levelColor(s.airLevel))
+                    } else {
+                        Label(s.doseLabel ?? "耳机", systemImage: "headphones")
+                    }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Label(s.noiseText, systemImage: "ear")
+                    Label(s.showsAir ? s.noiseText : (s.dosePercent.map { String(format: "%.0f%%", $0) } ?? "–"), systemImage: "ear")
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
-                        Text("电量 \(s.batteryText) · \(s.ancLabel ?? "–")")
+                        Text(s.showsAir ? "电量 \(s.batteryText) · \(s.ancLabel ?? "–")" : (s.doseLabel ?? "耳机播放音量"))
                         Spacer()
                         if let end = s.focusEndsAt { Text(end, style: .timer).monospacedDigit() }
                     }.font(.caption)
                 }
-            } compactLeading: {
-                Image(systemName: "aqi.medium").foregroundStyle(levelColor(s.airLevel))
+            }             compactLeading: {
+                Image(systemName: s.showsAir ? "aqi.medium" : "headphones")
+                    .foregroundStyle(s.showsAir ? levelColor(s.airLevel) : LevelPalette.ink)
             } compactTrailing: {
                 Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
-            } minimal: {
-                Circle().fill(levelColor(s.airLevel))
+            }             minimal: {
+                if s.showsAir {
+                    Circle().fill(levelColor(s.airLevel))
+                } else {
+                    Image(systemName: "headphones")
+                }
             }
         }
     }

@@ -53,8 +53,12 @@ struct ZoneDashboard: View {
                 AirOrb(level: s.airLevel, label: s.airLevel.map { "空气" + Palette.levelNames[$0] } ?? "空气 –",
                        sublabel: s.no2Ppb.map { String(format: "NO₂ %.0f ppb", $0) })
                 Spacer(minLength: 8)
-                DoseBar(percent: noise.today.dosePercent).frame(maxWidth: 180)
+                DoseBar(percent: noise.mergedDosePercent).frame(maxWidth: 180)
             }
+            Text(noise.doseCaption)
+                .font(.caption)
+                .foregroundStyle(Palette.secondaryInk)
+                .fixedSize(horizontal: false, vertical: true)
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(s.ambientDb.map { String(format: "%.0f", $0) } ?? "–")
                     .font(.system(.title, design: .rounded).weight(.bold))

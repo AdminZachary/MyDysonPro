@@ -18,6 +18,7 @@ struct ContentView: View {
                         MorningCard(summary: m)
                     }
                     SleepSoundsCard()
+                    NoiseDoseCard()
                     streakStrip
                     testCard
                     optionsCard
@@ -140,6 +141,7 @@ struct ContentView: View {
     private var optionsCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("选项").font(.headline)
+            HeadphonePicker()
             Toggle("同时直接暂停 Apple Music", isOn: $model.pauseAppleMusic)
             Button("授权 Apple Music 控制") { model.requestMusicAuthorization(); Haptics.night() }
                 .touchTarget()
@@ -310,7 +312,7 @@ struct AchievementsView: View {
                             .accessibilityElement(children: .combine)
                         }
                     }
-                    Text("* 安静日和清新通勤依赖未验证的 201D 读数；读不到时只是不会解锁，不影响其他成就。")
+                    Text("* 清新通勤依赖未验证的 201D 读数；读不到时只是不会解锁。安静日用耳机播放音量或环境噪音，不需要 Zone。")
                         .font(.caption).foregroundStyle(Night.muted)
                 }
                 .padding(20)
@@ -323,5 +325,75 @@ struct AchievementsView: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.touchTarget() } }
         }
         .preferredColorScheme(.dark)
+    }
+}
+
+struct NoiseDoseCard: View {
+    @ObservedObject var noise = NoiseExposureStore.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("今日噪音").font(.headline)
+            DoseBar(percent: noise.mergedToday.isEmpty ? nil : noise.mergedDosePercent)
+            Text(noise.doseCaption)
+                .font(.caption)
+                .foregroundStyle(Night.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(NoiseMerge.rule)
+                .font(.caption2)
+                .foregroundStyle(Night.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            if let aside = noise.zoneAmbientAside {
+                Text(aside)
+                    .font(.caption)
+                    .foregroundStyle(Night.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if noise.mergedToday.contains(where: { $0.origin == .zone }) {
+                UnverifiedBadge(text: "Zone 环境读数未验证")
+            }
+        }
+        .nightCard()
+        .task { await noise.refreshHealth() }
+    }
+}
+
+struct HeadphonePicker: View {
+    @ObservedObject private var headphones = HeadphoneSettings.shared
+    var suggested: HeadphoneKind? = nil
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("我的耳机").font(.headline)
+            if let suggested, suggested != headphones.kind {
+                Button("检测到\(suggested.title)，用这个建议") {
+                    headphones.kind = suggested
+                    Haptics.select()
+                }
+                .buttonStyle(.bordered)
+                .touchTarget()
+            }
+            ForEach(HeadphoneKind.allCases, id: \.self) { kind in
+                Button {
+                    headphones.kind = kind
+                    Haptics.select()
+                } label: {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: headphones.kind == kind ? "largecircle.fill.circle" : "circle")
+                            .frame(width: 28)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(kind.title).font(.body.weight(.semibold))
+                            Text(kind.note)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .touchTarget()
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 }

@@ -108,13 +108,9 @@ struct OnboardingView: View {
     }
 
     private var zone: some View {
-        pageView("headphones", "有 Dyson Zone 吗？", "可选。登录一次 MyDyson 账号取回蓝牙密钥，只存在本机钥匙串。") {
-            VStack(alignment: .leading, spacing: 12) {
-                row("xmark.app", "使用时请彻底退出 MyDyson：Zone 同一时间只接受一个控制端")
-                row("questionmark.diamond", "标“未验证”的数据（空气/噪音布局、佩戴状态）是推断的，仅供参考")
-                row("arrow.right.circle", "稍后在“Zone”标签里启用并登录")
-            }
-            .card()
+        pageView("headphones", "我的耳机", "选你平时戴的那一副。以后可以在睡眠页的“选项”里改。") {
+            HeadphonePicker(suggested: HeadphoneRoute.suggestion())
+                .card()
         }
     }
 

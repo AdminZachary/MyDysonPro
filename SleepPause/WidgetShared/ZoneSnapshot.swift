@@ -16,6 +16,9 @@ struct ZoneSnapshot: Codable, Hashable {
     var dosePercent: Double?
     var focusPhase: String?       // FocusPhase.label
     var focusEndsAt: Date?
+    /// False for AirPods and other headphones: widgets hide air, ANC and fan.
+    var showsAir: Bool = true
+    var doseLabel: String? = nil
 
     static let placeholder = ZoneSnapshot(date: Date(), connected: true, battery: 72, ancLabel: "降噪", worn: true,
                                           ambientDb: 62, no2Ppb: 18, vocPpb: 120, temperatureC: 23,
@@ -42,6 +45,13 @@ struct ZoneSnapshot: Codable, Hashable {
 
     /// One line for Siri / inline widgets / notifications.
     var spokenSummary: String {
+        if !showsAir {
+            var parts: [String] = []
+            if let d = dosePercent { parts.append(String(format: "今日噪音剂量 %.0f%%", d)) }
+            if let label = doseLabel { parts.append(label) }
+            if let a = ambientDb { parts.append(String(format: "最近 %.0f 分贝", a)) }
+            return parts.isEmpty ? "暂无耳机噪音数据" : parts.joined(separator: "，")
+        }
         guard connected else { return "Zone 未连接" }
         var parts: [String] = []
         if let l = airLevel {

@@ -73,7 +73,7 @@ func runPolishChecks() -> Int {
     ck(ms.smartAlarmEarlyMinutes == 12 && ms.lines.contains { $0.contains("提前 12 分钟") }, "morning: smart alarm early")
     ck(ms.lines.contains { $0.contains("未验证") }, "morning: unverified flag")
     let ms2 = MorningSummary.build(bedStart: nil, onset: nil, wake: d(3, 7), noise: [], layoutVerified: false, alarmDeadline: nil, alarmEarly: false)
-    ck(ms2.headline == "早上好" && ms2.lines == ["没有夜间噪音数据（需要整夜连接并佩戴 Zone）"], "morning: graceful with no data")
+    ck(ms2.headline == "早上好" && ms2.lines == ["没有夜间噪音数据"], "morning: graceful with no data")
 
     // --- Streaks & achievements
     let today = d(10, 12)
@@ -90,6 +90,6 @@ func runPolishChecks() -> Int {
     ck(un.isSuperset(of: [.firstNight, .sleepWeek, .earlyBird, .firstFocus, .quietDay]) && !un.contains(.focusTen) && !un.contains(.quietWeek),
        "achievements: unlocked set")
     ck(!StreakKind.quiet.qualifies(DayRecord(day: today, noiseMinutes: 10, dosePercent: 1)), "quiet day needs ≥60 min of data")
-    ck(Achievement.quietDay.usesUnverifiedData && !Achievement.firstNight.usesUnverifiedData, "achievements: unverified flags")
+    ck(!Achievement.quietDay.usesUnverifiedData && Achievement.cleanCommute.usesUnverifiedData && !Achievement.firstNight.usesUnverifiedData, "achievements: unverified flags")
     return fails
 }

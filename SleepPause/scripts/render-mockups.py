@@ -126,11 +126,11 @@ def zone(d, w, h):
 def onboarding(d, w, h):
     d.rectangle((40, 100, w - 40, 112), fill=BLUE)
     square(d, (70, 180, 170, 280), BLUE)
-    d.text((70, 320), "睡着了，音乐自动停", font=font(36, True), fill=INK)
-    d.text((70, 390), "手表判断入睡，手机暂停播放。", font=font(24), fill=MUTED)
-    d.text((70, 430), "降噪整晚保持开启。", font=font(24), fill=MUTED)
+    d.text((70, 320), "我的耳机", font=font(36, True), fill=INK)
+    d.text((70, 390), "Zone、AirPods 或其他耳机。", font=font(24), fill=MUTED)
+    d.text((70, 430), "没有 Zone 也能暂停播放。", font=font(24), fill=MUTED)
     d.rounded_rectangle((70, 520, w - 70, 860), radius=6, fill=SURFACE, outline=HAIR)
-    for i, line in enumerate(("手表：心率 + 静止", "iPhone：暂停播放", "Zone：空气、噪音、风扇")):
+    for i, line in enumerate(("Dyson Zone", "AirPods / Beats", "其他蓝牙或有线耳机")):
         d.text((100, 560 + i * 80), line, font=font(26), fill=INK)
     d.rounded_rectangle((70, h - 280, w - 70, h - 180), radius=10, fill=BLUE)
     d.text((340, h - 250), "继续", font=font(32, True), fill=PAPER)
@@ -199,7 +199,7 @@ def settings(d, w, h):
     d.text((56, 120), "夜间色，不是亮蓝", font=font(30, True), fill=NINK)
     d.rectangle((24, 24, w - 24, h - 48), fill=NIGHT)
     d.text((56, 120), "夜间色，不是亮蓝", font=font(30, True), fill=NINK)
-    rows = [("同时暂停 Apple Music", True), ("写入健康", False), ("授权健康数据", None)]
+    rows = [("我的耳机  AirPods", True), ("写入健康", False), ("授权健康数据", None)]
     y = 220
     for label, on in rows:
         d.rounded_rectangle((56, y, w - 56, y + 100), radius=6, fill=NSURF)
@@ -209,7 +209,7 @@ def settings(d, w, h):
             d.rounded_rectangle((w - 180, y + 30, w - 90, y + 70), radius=16, fill=col)
         y += 120
     d.text((56, y + 20), "文字 #E7C7A8  ·  强调 #D47848", font=font(22), fill=NMUTED)
-    d.text((56, y + 60), "对比度见 docs/DESIGN.md", font=font(22), fill=NMUTED)
+    d.text((56, y + 60), "同一分钟不叠加耳机音量和环境噪音", font=font(22), fill=NMUTED)
 
 
 def main():

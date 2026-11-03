@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @AppStorage("onboarding.done") private var onboardingDone = false
     @ObservedObject private var model = AppModel.shared
+    @ObservedObject private var headphones = HeadphoneSettings.shared
     @ObservedObject private var focus = FocusManager.shared
     @ObservedObject private var sounds = SleepSoundPlayer.shared
 
@@ -12,12 +13,16 @@ struct RootView: View {
     var body: some View {
         TabView {
             ContentView().tabItem { Label("睡眠", systemImage: "moon.zzz") }
-            ZoneView().tabItem { Label("Zone", systemImage: "headphones") }
+            if headphones.usesZone {
+                ZoneView().tabItem { Label("Zone", systemImage: "headphones") }
+            }
             FocusView().tabItem { Label("专注", systemImage: "timer") }
-            CommuteMapView().tabItem { Label("通勤地图", systemImage: "map") }
+            if headphones.usesZone {
+                CommuteMapView().tabItem { Label("通勤地图", systemImage: "map") }
+            }
         }
         // No custom tab-bar background: the system Liquid Glass bar is used as-is.
-        .tint(Color(red: 0.45, green: 0.45, blue: 0.95))
+        .tint(Palette.blue)
         .modifier(GlassTabChrome(enabled: hasLiveStatus))
         .fullScreenCover(isPresented: Binding(get: { !onboardingDone }, set: { onboardingDone = !$0 })) {
             OnboardingView().environmentObject(AppModel.shared)

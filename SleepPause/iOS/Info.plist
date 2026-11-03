@@ -44,7 +44,7 @@
 		<string>location</string>
 	</array>
 	<key>NSHealthShareUsageDescription</key>
-	<string>用于读取睡眠与心率数据，以便判断入睡时间。</string>
+	<string>用于读取睡眠、心率，以及“健康”中的耳机播放音量和 Apple Watch 环境噪音，用来估算每日噪音剂量。</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>用于把检测到的入睡时间，以及（可选）Dyson Zone 测得的环境噪音写入“健康”App。</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

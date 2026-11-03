@@ -76,6 +76,7 @@ struct FocusView: View {
     @ObservedObject var focus = FocusManager.shared
     @ObservedObject var settings = ZoneSettings.shared
     @ObservedObject var zone = ZoneManager.shared
+    @ObservedObject var headphones = HeadphoneSettings.shared
 
     var body: some View {
         NavigationStack {
@@ -97,7 +98,9 @@ struct FocusView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    if !zone.isReady {
+                    if !headphones.usesZone {
+                        Text(headphones.kind.note).font(.footnote).foregroundStyle(.secondary)
+                    } else if !zone.isReady {
                         Text("Zone 未连接：计时照常进行，只是不会切换降噪/风扇。").font(.footnote).foregroundStyle(.secondary)
                     }
                 }
@@ -106,20 +109,26 @@ struct FocusView: View {
                     Stepper("短休息 \(Int(settings.focus.shortBreakMinutes)) 分钟", value: $settings.focus.shortBreakMinutes, in: 1...30)
                     Stepper("长休息 \(Int(settings.focus.longBreakMinutes)) 分钟", value: $settings.focus.longBreakMinutes, in: 5...45, step: 5)
                     Stepper("每 \(settings.focus.cyclesBeforeLongBreak) 个番茄长休息一次", value: $settings.focus.cyclesBeforeLongBreak, in: 2...8)
-                    Picker("专注时", selection: $settings.focus.focusANC) {
-                        ForEach(ZoneANCMode.allCases, id: \.self) { Text($0.label).tag($0) }
+                    if headphones.usesZone {
+                        Picker("专注时", selection: $settings.focus.focusANC) {
+                            ForEach(ZoneANCMode.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        Picker("休息时", selection: $settings.focus.breakANC) {
+                            ForEach(ZoneANCMode.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        Picker("专注时风扇", selection: $settings.focus.focusFanLevel) {
+                            Text("不改变").tag(Int?.none)
+                            ForEach(0..<4) { Text(["关", "静息", "轻度", "中度"][$0]).tag(Int?.some($0)) }
+                        }
+                        Toggle("摘下耳机时暂停计时（2004 未验证）", isOn: $settings.focus.pauseWhenUnworn)
+                    } else {
+                        Text("降噪和风扇只在选择 Dyson Zone 时出现。").font(.footnote).foregroundStyle(.secondary)
                     }
-                    Picker("休息时", selection: $settings.focus.breakANC) {
-                        ForEach(ZoneANCMode.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    Picker("专注时风扇", selection: $settings.focus.focusFanLevel) {
-                        Text("不改变").tag(Int?.none)
-                        ForEach(0..<4) { Text(["关", "静息", "轻度", "中度"][$0]).tag(Int?.some($0)) }
-                    }
-                    Toggle("摘下耳机时暂停计时（2004 未验证）", isOn: $settings.focus.pauseWhenUnworn)
                 }
                 Section {
-                    Text("专注期间暂停自动降噪切换；睡眠监测期间不能开始专注，开始“今晚监测”会自动结束专注。也可以在快捷指令里用“开始 Zone 专注”，配合系统的专注模式自动化。")
+                    Text(headphones.usesZone
+                         ? "专注期间暂停自动降噪切换；睡眠监测期间不能开始专注，开始“今晚监测”会自动结束专注。也可以在快捷指令里用“开始 Zone 专注”，配合系统的专注模式自动化。"
+                         : "睡眠监测期间不能开始专注，开始“今晚监测”会自动结束专注。这副耳机不能由 App 切换降噪。")
                         .font(.footnote).foregroundStyle(.secondary)
                 }
             }

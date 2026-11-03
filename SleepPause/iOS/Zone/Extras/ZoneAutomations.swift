@@ -93,17 +93,22 @@ final class ZoneAutomations: ObservableObject {
         let r = zone.lastReading
         let ok = r?.looksPlausible == true && Date().timeIntervalSince(r?.date ?? .distantPast) < 300
         let f = FocusManager.shared.session
+        let zoneOn = HeadphonePreference.usesZone() && ZoneSettings.shared.moduleEnabled
+        let today = NoiseExposureStore.shared.mergedToday
+        let latestPlayback = today.last { $0.origin == .headphone }?.leq
         return ZoneSnapshot(date: Date(), connected: zone.isReady, battery: zone.batteryPercent, ancLabel: zone.ancMode?.label,
-                            worn: zone.worn, ambientDb: ok ? r?.ambientDb : nil, no2Ppb: ok ? r?.no2Ppb : nil,
-                            vocPpb: ok ? r?.vocPpb : nil, temperatureC: ok ? r?.temperatureC : nil,
-                            layoutVerified: ZoneAQLayout.current.isVerified,
-                            dosePercent: NoiseExposureStore.shared.today.dosePercent,
+                            worn: zone.worn, ambientDb: zoneOn ? (ok ? r?.ambientDb : nil) : latestPlayback,
+                            no2Ppb: zoneOn && ok ? r?.no2Ppb : nil,
+                            vocPpb: zoneOn && ok ? r?.vocPpb : nil, temperatureC: zoneOn && ok ? r?.temperatureC : nil,
+                            layoutVerified: zoneOn ? ZoneAQLayout.current.isVerified : !today.contains { $0.origin == .zone },
+                            dosePercent: NoiseExposureStore.shared.mergedDosePercent,
                             focusPhase: f.isActive ? (f.isPaused ? "\(f.phase.label)（暂停）" : f.phase.label) : nil,
-                            focusEndsAt: f.isActive && !f.isPaused ? f.phaseEndsAt : nil)
+                            focusEndsAt: f.isActive && !f.isPaused ? f.phaseEndsAt : nil,
+                            showsAir: zoneOn,
+                            doseLabel: NoiseMerge.primaryLabel(today))
     }
 
     func publishSnapshot(forceActivity: Bool = false) {
-        guard ZoneSettings.shared.moduleEnabled else { return }
         let s = currentSnapshot()
         SharedStore.save(s)
         let now = Date()
@@ -117,8 +122,9 @@ final class ZoneAutomations: ObservableObject {
         LiveActivityController.shared.update(s, force: forceActivity)
     }
 
-    func startLiveActivity(title: String = "Dyson Zone") {
-        LiveActivityController.shared.start(title: title, snapshot: currentSnapshot())
+    func startLiveActivity(title: String? = nil) {
+        let name = title ?? (HeadphonePreference.usesZone() ? "Dyson Zone" : "耳机噪音")
+        LiveActivityController.shared.start(title: name, snapshot: currentSnapshot())
     }
 
     // MARK: sleep onset history (for the weekly report)
@@ -136,11 +142,15 @@ final class ZoneAutomations: ObservableObject {
         let cal = Calendar.current
         let week = WeeklyReport.previousWeek(now: now, calendar: cal)
         let onsets = (UserDefaults.standard.array(forKey: onsetKey) as? [Double] ?? []).map { Date(timeIntervalSince1970: $0) }
+        let merged = NoiseExposureStore.shared.mergedAll.filter { week.contains($0.start) }
+        let noiseVerified = !merged.contains { $0.origin == .zone }
+        let hasCommute = !CommuteRecorder.shared.routes.filter { week.contains($0.start) }.isEmpty
         let r = WeeklyReport.build(week: week,
-                                   noiseMinutes: NoiseExposureStore.shared.minutes.map { ($0.start, $0.leq) },
+                                   noiseMinutes: merged.map { ($0.start, $0.leq) },
                                    routes: CommuteRecorder.shared.routes,
                                    focus: FocusManager.shared.log.map { ($0.date, $0.minutes) },
-                                   onsets: onsets, calendar: cal, layoutVerified: ZoneAQLayout.current.isVerified)
+                                   onsets: onsets, calendar: cal,
+                                   layoutVerified: noiseVerified && (!hasCommute || ZoneAQLayout.current.isVerified))
         lastReport = r
         return r
     }

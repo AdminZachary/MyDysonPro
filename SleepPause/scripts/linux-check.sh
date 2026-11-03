@@ -15,5 +15,5 @@ echo "parse OK"
 mkdir -p .build-check
 cp Tests/DetectorChecks.swift .build-check/main.swift
 "$SWIFTC" "${sdk_args[@]}" -O Shared/*.swift iOS/SilentAudio.swift iOS/Core/*.swift \
-  iOS/Zone/Core/*.swift WidgetShared/ZoneSnapshot.swift Tests/ZoneCoreChecks.swift Tests/ExtrasChecks.swift Tests/PolishChecks.swift .build-check/main.swift -o .build-check/checks
+  iOS/Zone/Core/*.swift WidgetShared/ZoneSnapshot.swift Tests/ZoneCoreChecks.swift Tests/ExtrasChecks.swift Tests/PolishChecks.swift Tests/NoiseMergeChecks.swift .build-check/main.swift -o .build-check/checks
 ./.build-check/checks

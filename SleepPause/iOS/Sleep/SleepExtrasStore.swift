@@ -27,10 +27,17 @@ final class SleepExtrasStore: ObservableObject {
     func makeMorningSummary(wake: Date, onset: Date?, alarmDeadline: Date? = nil, alarmEarly: Bool = false) {
         let start = (d.object(forKey: "session.start") as? Double).map { Date(timeIntervalSince1970: $0) }
         guard let onset, wake.timeIntervalSince(onset) > 30 * 60 else { return }   // a real night only
+        let merged = NoiseExposureStore.shared.mergedAll
+        let night = merged.filter { sample in
+            guard let onset else { return false }
+            return sample.start >= onset && sample.start < wake
+        }
+        let verified = !night.contains { $0.origin == .zone }
         let m = MorningSummary.build(bedStart: start, onset: onset, wake: wake,
-                                     noise: NoiseExposureStore.shared.minutes.map { ($0.start, $0.leq) },
-                                     layoutVerified: ZoneAQLayout.current.isVerified,
-                                     alarmDeadline: alarmDeadline, alarmEarly: alarmEarly)
+                                     noise: night.map { ($0.start, $0.leq) },
+                                     layoutVerified: verified,
+                                     alarmDeadline: alarmDeadline, alarmEarly: alarmEarly,
+                                     noiseLabel: NoiseMerge.primaryLabel(night))
         if let old = morning, old.onset == m.onset { return }        // one summary per night
         morning = m
         if let data = try? JSONEncoder().encode(m) { d.set(data, forKey: "morning.last") }
@@ -61,7 +68,7 @@ final class SleepExtrasStore: ObservableObject {
         }
         let ref = ExposureAccumulator.referenceSeconds * pow(10, ExposureAccumulator.criterionDb / 10)
         var energy: [Date: Double] = [:]
-        for m in NoiseExposureStore.shared.minutes {
+        for m in NoiseExposureStore.shared.mergedAll {
             let day = cal.startOfDay(for: m.start); var r = rec(day); r.noiseMinutes += 1; byDay[day] = r
             energy[day, default: 0] += pow(10, m.leq / 10) * 60
         }

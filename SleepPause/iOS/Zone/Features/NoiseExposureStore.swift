@@ -24,7 +24,9 @@ final class NoiseExposureStore: ObservableObject {
 
     @Published private(set) var today: ExposureAccumulator
     @Published private(set) var minutes: [MinuteSample] = []
+    @Published private(set) var healthMinutes: [NoiseMinute] = []
     @Published private(set) var healthStatus: String = "未写入"
+    private var mergedAlertDay: Date?
 
     private var bucket: [(db: Double, seconds: Double)] = []
     private var bucketStart: Date?
@@ -48,7 +50,8 @@ final class NoiseExposureStore: ObservableObject {
         appendRaw(r)
         guard r.looksPlausible, worn != false else { return }
         let alert = today.add(levelDb: r.ambientDb, at: r.date)
-        if alert && ZoneSettings.shared.noiseAlerts { notifyDose() }
+        _ = alert
+        noteMergedDose()
 
         // 1-minute Leq buckets
         if bucketStart == nil { bucketStart = r.date }
@@ -84,16 +87,82 @@ final class NoiseExposureStore: ObservableObject {
 
     func requestPermissions() async {
         if HKHealthStore.isHealthDataAvailable() {
-            try? await health.requestAuthorization(toShare: [audioType], read: [audioType])
+            let headphone = HKQuantityType(.headphoneAudioExposure)
+            try? await health.requestAuthorization(toShare: [audioType], read: [audioType, headphone])
         }
         _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])
+        await refreshHealth()
+    }
+
+    /// Reads headphone playback level and Apple Watch environmental noise from Health.
+    /// Samples this app wrote (metadata `SleepPauseSource`) are skipped so Zone data is not counted twice.
+    func refreshHealth() async {
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        let headphone = HKQuantityType(.headphoneAudioExposure)
+        let start = Calendar.current.date(byAdding: .day, value: -8, to: Date()) ?? Date()
+        let playback = await fetch(headphone, since: start, skipOurs: false)
+        let ambient = await fetch(audioType, since: start, skipOurs: true)
+        healthMinutes = NoiseMerge.minutes(from: playback, origin: .headphone)
+            + NoiseMerge.minutes(from: ambient, origin: .watch)
+        noteMergedDose()
+    }
+
+    var mergedAll: [NoiseMinute] {
+        NoiseMerge.merged(
+            headphone: healthMinutes.filter { $0.origin == .headphone },
+            zone: minutes.map { NoiseMinute(start: $0.start, leq: $0.leq, origin: .zone) },
+            watch: healthMinutes.filter { $0.origin == .watch })
+    }
+
+    var mergedToday: [NoiseMinute] {
+        mergedAll.filter { Calendar.current.isDateInToday($0.start) }
+    }
+
+    var mergedDosePercent: Double { NoiseMerge.dosePercent(mergedToday) }
+
+    var mergedLex: Double? {
+        let energy = mergedToday.reduce(0.0) { $0 + pow(10, $1.leq / 10) * 60 }
+        return energy > 0 ? 10 * log10(energy / ExposureAccumulator.referenceSeconds) : nil
+    }
+
+    var doseCaption: String { NoiseMerge.caption(mergedToday) }
+
+    /// Latest Zone ambient level, shown beside the dose and not added when that minute already has playback.
+    var zoneAmbientAside: String? {
+        guard HeadphonePreference.usesZone(), ZoneManager.shared.isReady,
+              let db = ZoneManager.shared.lastReading?.ambientDb else { return nil }
+        return String(format: "Zone 环境噪音 %.0f dB。%@", db, NoiseMerge.rule)
+    }
+
+    private func noteMergedDose() {
+        let day = Calendar.current.startOfDay(for: Date())
+        guard mergedDosePercent >= 100, mergedAlertDay != day, ZoneSettings.shared.noiseAlerts else { return }
+        mergedAlertDay = day
+        notifyDose()
+    }
+
+    private func fetch(_ type: HKQuantityType, since start: Date, skipOurs: Bool) async -> [(start: Date, end: Date, db: Double)] {
+        await withCheckedContinuation { cont in
+            let query = HKSampleQuery(sampleType: type,
+                                      predicate: HKQuery.predicateForSamples(withStart: start, end: Date(), options: []),
+                                      limit: HKObjectQueryNoLimit,
+                                      sortDescriptors: nil) { _, samples, _ in
+                let rows = (samples as? [HKQuantitySample] ?? []).compactMap { sample -> (Date, Date, Double)? in
+                    if skipOurs, sample.metadata?["SleepPauseSource"] != nil { return nil }
+                    let db = sample.quantity.doubleValue(for: .decibelAWeightedSoundPressureLevel())
+                    return (sample.startDate, sample.endDate, db)
+                }
+                cont.resume(returning: rows)
+            }
+            health.execute(query)
+        }
     }
 
     private func notifyDose() {
         let c = UNMutableNotificationContent()
         c.title = "今日噪音暴露已达上限"
-        c.body = String(format: "按 85 dB·8 小时标准，今日剂量已达 %.0f%%（LEX,8h ≈ %.0f dB）。建议开启降噪或休息耳朵。",
-                        today.dosePercent, today.lex8h ?? 0)
+        c.body = String(format: "按 85 dB·8 小时标准，今日剂量已达 %.0f%%（LEX,8h ≈ %.0f dB）。%@",
+                        mergedDosePercent, mergedLex ?? 0, NoiseMerge.rule)
         let req = UNNotificationRequest(identifier: "zone.dose.\(Int(today.dayStart.timeIntervalSince1970))", content: c, trigger: nil)
         UNUserNotificationCenter.current().add(req)
     }

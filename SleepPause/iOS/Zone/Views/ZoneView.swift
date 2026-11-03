@@ -150,7 +150,9 @@ struct ZoneView: View {
 
     private var noiseSection: some View {
         Section {
-            LabeledContent("今日噪音剂量", value: String(format: "%.0f%%", noise.today.dosePercent))
+            LabeledContent("今日噪音剂量", value: String(format: "%.0f%%", noise.mergedDosePercent))
+            Text(noise.doseCaption).font(.caption).foregroundStyle(.secondary)
+            Text(NoiseMerge.rule).font(.caption).foregroundStyle(.secondary)
             LabeledContent("今日 LEX,8h", value: noise.today.lex8h.map { String(format: "%.1f dB", $0) } ?? "–")
             Toggle("写入“健康”·环境声音", isOn: $settings.writeNoiseToHealth)
                 .onChange(of: settings.writeNoiseToHealth) { _, on in if on { Task { await noise.requestPermissions() } } }

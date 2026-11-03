@@ -74,5 +74,6 @@ check(wav.count == 44 + 16000 && String(data: wav.prefix(4), encoding: .ascii) =
 failures += runZoneChecks()
 failures += runExtrasChecks()
 failures += runPolishChecks()
+failures += runNoiseMergeChecks()
 print(failures == 0 ? "ALL CHECKS PASSED" : "\(failures) CHECK(S) FAILED")
 exit(failures == 0 ? 0 : 1)

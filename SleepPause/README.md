@@ -324,10 +324,10 @@ SleepPause/
    - 三条连续记录：
      - 守护睡眠：检测到入睡
      - 专注：当天专注 ≥25 分钟
-     - 安静日：戴 Zone ≥1 小时且噪音剂量 <50%
+     - 安静日：耳机或环境噪音 ≥1 小时且剂量 <50%（没有 Zone 也可以）
    - 9 个徽章：第一晚、七夜守护、早睡达人、十番茄、清新通勤等。解锁时发通知并有触感反馈。
    - 参考：[Streaks](https://streaks.app/)、[Forest](https://apps.apple.com/us/app/forest-focus-for-productivity/id866450515)、[HabitStreak](https://habitstreak.me/)。
-   - ⚠️ “安静日 / 安静一周 / 清新通勤”依赖 201D，读不到时只是不会解锁。
+   - ⚠️ “清新通勤”依赖未验证的 201D，读不到时只是不会解锁。安静日用“健康”里的耳机播放音量或手表环境噪音，没有 Zone 也可以。
 
 ### 新增安装步骤
 - 项目里多了一个 target：**SleepPauseComplications**（手表表盘复杂功能），共 4 个 target。在 Xcode 的 Signing 里给它也选上你的 Team。
@@ -379,6 +379,24 @@ SleepPause/
 - 实际渲染效果：效果图是示意，不是 iOS 27 模拟器截图；玻璃的真实折射、滑杆两端的样子需要在真机上看。
 - 卡片里放玻璃标签、`GlassEffectContainer` 嵌套在 `List` 行里的表现，以及 `.glassEffectID` 在 `Form` 里的变形动画是否流畅。
 - `#if compiler(>=6.4)` 依据的是 Xcode 27 发布说明里的 “includes Swift 6.4”。
+
+## 我的耳机
+
+在引导页和睡眠页的“选项”里选择 **我的耳机**：
+
+- **Dyson Zone**：显示 Zone 标签、空气、降噪、风扇和通勤地图。入睡时默认保持降噪，不写校准命令。
+- **AirPods / Beats**：没有 Zone 标签。Apple 不允许第三方 App 控制降噪或读取入耳检测；系统自己的“摘下自动暂停”仍然有效。噪音剂量来自“健康”里的耳机播放音量。
+- **其他蓝牙或有线耳机**：睡眠暂停、智能闹钟、助眠声音、专注、连续天数和耳机音量都可用。
+
+如果当前音频输出能认出耳机，会给出一个建议，不会自动改掉你的选择。
+
+每日噪音剂量、周报、早安小结和“安静日”在没有 Zone 时也能算。同一分钟只计一种来源，不把两个分贝数加在一起：
+
+1. 耳机播放音量（HealthKit `headphoneAudioExposure`）
+2. 否则 Zone 的环境噪音（未验证的 201D）
+3. 否则 Apple Watch 噪音 App 的环境噪音（`environmentalAudioExposure`）
+
+Zone 连着时，环境读数仍会单独显示，但不会和同一分钟的耳机音量重复计入剂量。
 
 ## 在 GitHub Actions 上编译（没有 Mac 时）
 

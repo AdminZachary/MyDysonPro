@@ -15,7 +15,7 @@ enum StreakKind: String, CaseIterable, Codable {
     case sleep, focus, quiet
     var label: String { switch self { case .sleep: return "守护睡眠"; case .focus: return "专注"; case .quiet: return "安静日" } }
     var symbol: String { switch self { case .sleep: return "moon.stars.fill"; case .focus: return "timer"; case .quiet: return "ear.fill" } }
-    var usesUnverifiedData: Bool { self == .quiet }
+    var usesUnverifiedData: Bool { false }
 
     func qualifies(_ r: DayRecord) -> Bool {
         switch self {
@@ -52,7 +52,7 @@ enum Achievement: String, CaseIterable, Codable {
         case .firstFocus: return "完成一次 25 分钟专注"
         case .focusTen: return "累计专注 250 分钟"
         case .focusWeek: return "连续 7 天专注 ≥25 分钟"
-        case .quietDay: return "戴 Zone ≥1 小时且噪音剂量 <50%"
+        case .quietDay: return "≥1 小时耳机或环境噪音，且剂量 <50%"
         case .quietWeek: return "连续 7 个安静日"
         case .cleanCommute: return "一次通勤平均 NO₂ < 21 ppb"
         }
@@ -70,7 +70,7 @@ enum Achievement: String, CaseIterable, Codable {
         case .cleanCommute: return "aqi.low"
         }
     }
-    var usesUnverifiedData: Bool { self == .quietDay || self == .quietWeek || self == .cleanCommute }
+    var usesUnverifiedData: Bool { self == .cleanCommute }
 }
 
 enum AchievementEngine {

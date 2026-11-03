@@ -95,8 +95,13 @@ func runExtrasChecks() -> Int {
     let route2 = CommuteRoute(name: "骑车", start: mon.addingTimeInterval(86400 + 8 * 3600),
                               points: [CommutePoint(lat: 0, lon: 0, date: mon, no2Ppb: 20, vocPpb: nil, ambientDb: nil)])
     let onsets = [23 * 60 + 30, 24 * 60 + 30, 23 * 60 + 50].map { mon.addingTimeInterval(Double($0) * 60) }
-    let rep = WeeklyReport.build(week: wk, noiseMinutes: noise, routes: [route, route2],
-                                 focus: [(mon.addingTimeInterval(36000), 25), (mon.addingTimeInterval(40000), 50)],
+    let focusSessions: [(date: Date, minutes: Double)] = [
+        (mon.addingTimeInterval(36000), 25),
+        (mon.addingTimeInterval(40000), 50)
+    ]
+    let routes = [route, route2]
+    let rep = WeeklyReport.build(week: wk, noiseMinutes: noise, routes: routes,
+                                 focus: focusSessions,
                                  onsets: onsets, calendar: cal, layoutVerified: false)
     ck(rep.noiseMinutes == 240 && rep.minutesAbove85 == 240, "weekly: noise minutes in week only")
     ck(rep.days.count == 1 && abs(rep.days[0].dosePercent - 100) < 1, "weekly: 4 h @ 88 dB ≈ 100 % dose (got \(rep.days.first?.dosePercent ?? -1))")

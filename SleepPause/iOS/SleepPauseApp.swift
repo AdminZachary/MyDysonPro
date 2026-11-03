@@ -20,8 +20,13 @@ final class SleepPauseAppDelegate: NSObject, UIApplicationDelegate {
             ZoneAutomations.shared.wire()
             if ZoneSettings.shared.moduleEnabled { zone.bootstrap() }
             if ZoneSettings.shared.commuteRecording { CommuteRecorder.shared.start() }
+            Task { await NoiseExposureStore.shared.refreshHealth() }
         }
         return true
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        Task { await NoiseExposureStore.shared.refreshHealth() }
     }
 }
 

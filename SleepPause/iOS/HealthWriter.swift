@@ -10,7 +10,7 @@ final class HealthWriter {
         guard HKHealthStore.isHealthDataAvailable() else { return false }
         do {
             try await store.requestAuthorization(toShare: [sleepType, HKObjectType.workoutType(), HKQuantityType(.environmentalAudioExposure)],
-                                                 read: [sleepType, HKQuantityType(.heartRate), HKQuantityType(.environmentalAudioExposure)])
+                                                 read: [sleepType, HKQuantityType(.heartRate), HKQuantityType(.environmentalAudioExposure), HKQuantityType(.headphoneAudioExposure)])
             return true
         } catch {
             return false
