@@ -28,10 +28,7 @@ final class SleepExtrasStore: ObservableObject {
         let start = (d.object(forKey: "session.start") as? Double).map { Date(timeIntervalSince1970: $0) }
         guard let onset, wake.timeIntervalSince(onset) > 30 * 60 else { return }   // a real night only
         let merged = NoiseExposureStore.shared.mergedAll
-        let night = merged.filter { sample in
-            guard let onset else { return false }
-            return sample.start >= onset && sample.start < wake
-        }
+        let night = merged.filter { $0.start >= onset && $0.start < wake }
         let verified = !night.contains { $0.origin == .zone }
         let m = MorningSummary.build(bedStart: start, onset: onset, wake: wake,
                                      noise: night.map { ($0.start, $0.leq) },

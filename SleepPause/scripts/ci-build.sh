@@ -72,13 +72,12 @@ build_all() {
     -configuration Debug \
     build || failed=1
 
-  run_build ios-device \
-    -project SleepPause.xcodeproj \
-    -scheme SleepPause \
-    -destination 'generic/platform=iOS' \
-    -sdk iphoneos \
-    -configuration Debug \
-    build || failed=1
+run_build ios-device \
+  -project SleepPause.xcodeproj \
+  -scheme SleepPause \
+  -destination 'generic/platform=iOS' \
+  -configuration Debug \
+  build || failed=1
 
   run_build watch-simulator \
     -project SleepPause.xcodeproj \
@@ -117,7 +116,6 @@ xcodebuild \
   -project SleepPause.xcodeproj \
   -scheme SleepPause \
   -destination 'generic/platform=iOS' \
-  -sdk iphoneos \
   -configuration Release \
   -archivePath "$BUILD/SleepPause.xcarchive" \
   -derivedDataPath "$BUILD/DerivedData" \
