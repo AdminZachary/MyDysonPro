@@ -138,17 +138,18 @@ struct SleepPauseShortcuts: AppShortcutsProvider {
                     shortTitle: "开始专注", systemImageName: "timer")
         AppShortcut(intent: StopFocusIntent(), phrases: ["用 \(.applicationName) 结束专注"],
                     shortTitle: "结束专注", systemImageName: "stop.circle")
-        if HeadphonePreference.usesZone() {
-            AppShortcut(intent: GetZoneBatteryIntent(), phrases: ["\(.applicationName) Zone 电量"],
-                        shortTitle: "Zone 电量", systemImageName: "battery.75")
-            AppShortcut(intent: GetZoneReadingIntent(), phrases: ["\(.applicationName) Zone 读数"],
-                        shortTitle: "Zone 读数", systemImageName: "aqi.medium")
-            AppShortcut(intent: SetZoneANCIntent(), phrases: ["用 \(.applicationName) 设置 Zone 降噪"],
-                        shortTitle: "Zone 降噪", systemImageName: "ear")
-            AppShortcut(intent: ZoneAirSummaryIntent(), phrases: ["\(.applicationName) 空气怎么样", "问 \(.applicationName) 空气怎么样"],
-                        shortTitle: "空气怎么样", systemImageName: "aqi.low")
-            AppShortcut(intent: SetZoneFanIntent(), phrases: ["用 \(.applicationName) 设置 Zone 风扇"],
-                        shortTitle: "Zone 风扇", systemImageName: "wind")
-        }
+        // Zone shortcuts stay in the list because AppShortcuts is extracted at compile time
+        // and cannot branch on the saved headphone. Each Zone intent refuses to run unless
+        // 我的耳机 is Dyson Zone.
+        AppShortcut(intent: GetZoneBatteryIntent(), phrases: ["\(.applicationName) Zone 电量"],
+                    shortTitle: "Zone 电量", systemImageName: "battery.75")
+        AppShortcut(intent: GetZoneReadingIntent(), phrases: ["\(.applicationName) Zone 读数"],
+                    shortTitle: "Zone 读数", systemImageName: "aqi.medium")
+        AppShortcut(intent: SetZoneANCIntent(), phrases: ["用 \(.applicationName) 设置 Zone 降噪"],
+                    shortTitle: "Zone 降噪", systemImageName: "ear")
+        AppShortcut(intent: ZoneAirSummaryIntent(), phrases: ["\(.applicationName) 空气怎么样", "问 \(.applicationName) 空气怎么样"],
+                    shortTitle: "空气怎么样", systemImageName: "aqi.low")
+        AppShortcut(intent: SetZoneFanIntent(), phrases: ["用 \(.applicationName) 设置 Zone 风扇"],
+                    shortTitle: "Zone 风扇", systemImageName: "wind")
     }
 }
