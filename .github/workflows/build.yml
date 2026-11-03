@@ -1,0 +1,138 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: sleeppause-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Xcode build
+    runs-on: xcode-27
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          python3 - << 'PY'
+          import os, pathlib, plistlib, subprocess, sys
+          apps = []
+          for app in pathlib.Path("/Applications").glob("Xcode*.app"):
+              info = app / "Contents" / "Info.plist"
+              if not info.exists():
+                  continue
+              with info.open("rb") as fh:
+                  ver = str(plistlib.load(fh).get("CFBundleShortVersionString", "")).strip()
+              if not ver:
+                  continue
+              apps.append((tuple(int(p) if p.isdigit() else 0 for p in ver.split(".")), ver, str(app)))
+          if not apps:
+              sys.exit("no Xcode.app found under /Applications")
+          apps.sort()
+          print("Installed Xcode:")
+          for _, ver, path in apps:
+              print(f"  {ver}  {path}")
+          preferred = [a for a in apps if a[1].split(".")[0] == "27"]
+          if not preferred:
+              preferred = [a for a in apps if a[1].split(".")[0] == "26"]
+          chosen = (preferred or apps)[-1]
+          print(f"Selecting {chosen[1]} at {chosen[2]}")
+          subprocess.check_call(["sudo", "xcode-select", "-s", chosen[2]])
+          with pathlib.Path(os.environ["GITHUB_ENV"]).open("a") as fh:
+              fh.write(f"SELECTED_XCODE_VERSION={chosen[1]}\n")
+              fh.write(f"SELECTED_XCODE_PATH={chosen[2]}\n")
+          PY
+          # First launch registers the selected toolchain. Safe to repeat.
+          sudo xcodebuild -runFirstLaunch || true
+          xcode-select -p
+          xcodebuild -version
+          swift --version
+
+      - name: Install XcodeGen
+        run: |
+          set -euo pipefail
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew list xcodegen >/dev/null 2>&1 || brew install xcodegen
+          xcodegen --version
+
+      - name: Generate project and build
+        working-directory: SleepPause
+        run: bash scripts/ci-build.sh
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: SleepPause/ci-logs/**
+          if-no-files-found: warn
+
+      - name: Upload unsigned iOS archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: SleepPause-unsigned-ios
+          path: |
+            SleepPause/build/SleepPause-unsigned.ipa
+            SleepPause/build/UNSIGNED.txt
+            SleepPause/build/SleepPause.xcarchive/**
+          if-no-files-found: ignore
+
+  screenshots:
+    name: Simulator screenshots
+    runs-on: xcode-27
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          python3 - << 'PY'
+          import os, pathlib, plistlib, subprocess, sys
+          apps = []
+          for app in pathlib.Path("/Applications").glob("Xcode*.app"):
+              info = app / "Contents" / "Info.plist"
+              if not info.exists():
+                  continue
+              with info.open("rb") as fh:
+                  ver = str(plistlib.load(fh).get("CFBundleShortVersionString", "")).strip()
+              if not ver:
+                  continue
+              apps.append((tuple(int(p) if p.isdigit() else 0 for p in ver.split(".")), ver, str(app)))
+          if not apps:
+              sys.exit("no Xcode.app found under /Applications")
+          apps.sort()
+          preferred = [a for a in apps if a[1].split(".")[0] == "27"]
+          if not preferred:
+              preferred = [a for a in apps if a[1].split(".")[0] == "26"]
+          chosen = (preferred or apps)[-1]
+          print(f"Selecting {chosen[1]} at {chosen[2]}")
+          subprocess.check_call(["sudo", "xcode-select", "-s", chosen[2]])
+          PY
+          sudo xcodebuild -runFirstLaunch || true
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: |
+          set -euo pipefail
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew list xcodegen >/dev/null 2>&1 || brew install xcodegen
+          xcodegen --version
+
+      - name: Capture simulator screenshots
+        working-directory: SleepPause
+        run: bash scripts/capture-screenshots.sh
+
+      - name: Upload simulator screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: SleepPause/docs/screenshots/*.png
+          if-no-files-found: error

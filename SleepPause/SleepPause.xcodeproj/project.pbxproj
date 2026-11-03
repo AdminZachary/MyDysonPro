@@ -1,0 +1,1078 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03CEA127DA3D140FB130896C /* SleepOnsetDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232CA05472BB506A65559D32 /* SleepOnsetDetector.swift */; };
+		0B9E33A29A1E1205BDD07EDA /* ExposureAccumulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6875209DECCA866B2CA6C360 /* ExposureAccumulator.swift */; };
+		11EBBC131F7669AA3914A91C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89358B671E36929F90213415 /* ContentView.swift */; };
+		19AB967F9523EA5C8F6210D4 /* ZoneSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358E86E20D4EB0B363A11244 /* ZoneSnapshot.swift */; };
+		1B726CA35CCF3DA9BE6968FE /* ZoneDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E173E1269B0CDB4F34F0CEB /* ZoneDashboard.swift */; };
+		1F059E3A8A244424E9390C6D /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E29F05539FACB9223ADC964A /* WidgetKit.framework */; };
+		1F56DE8D54EB2C9368832B1B /* SleepExtrasStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D73DAD1578DE1ACE9E0CEF /* SleepExtrasStore.swift */; };
+		2127608349FDDE884C1CD92A /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFE308BE59C06E4357030381 /* MediaPlayer.framework */; };
+		2251569A1D8EFBA68399DB22 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C7D6EC35985F62F9C75E01C /* WatchConnectivity.framework */; };
+		2305CC39F1B4BA84CB18DD0E /* WeeklyReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3BF47468D658C29DA7F4A8 /* WeeklyReport.swift */; };
+		240154016B777B7EB2176A3B /* SleepPauseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3314352CBDC913128346AAE /* SleepPauseWatchApp.swift */; };
+		2678F0309F06B85660B82501 /* NoiseExposureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC12CB764BDB9F82DC2138B /* NoiseExposureStore.swift */; };
+		27D84F422BC134DBF860829D /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F6A4077F79D67C6A7A76F7 /* ZoneManager.swift */; };
+		2A1B397C20F44FD90536F548 /* FocusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68355899A2B698BAE5E241EA /* FocusManager.swift */; };
+		2B1BC7EA4CF33A0B1BF0D1CD /* ZoneAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6813362803764B567C301010 /* ZoneAutomations.swift */; };
+		30A1EED9337E8FA462BA15E0 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C7D6EC35985F62F9C75E01C /* WatchConnectivity.framework */; };
+		32565524113E194076DA177A /* ZoneIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68239822F8105B9AC254AEB1 /* ZoneIntents.swift */; };
+		34CB4F16A89C42302EE81074 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E29F05539FACB9223ADC964A /* WidgetKit.framework */; };
+		389A0AA979E752EF520EFB16 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1775C1E9F42BABFD23038C6D /* UserNotifications.framework */; };
+		3BE89CD73376851CF035F330 /* SleepMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E11246CA611926FDE4FB80 /* SleepMessage.swift */; };
+		3EAAB85E6C487118E4C5C455 /* ZoneActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ED96CF64A1C9AFD3F2CA28F /* ZoneActivityAttributes.swift */; };
+		3EB6A209498F351FDF110C0F /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 928D4C06E12E9CD15ADD3404 /* LiveActivityController.swift */; };
+		3F38CEBBF8F39644FE68BEAF /* NoiseSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02FB479AF037354B1E7E50B /* NoiseSynth.swift */; };
+		4284DD71B77C3B1FAB70B3A7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D89890B61245F310927DC08E /* CoreLocation.framework */; };
+		42C730CAEDB7EE3A074204A7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB18B5A409A0D3737EA8359 /* AVFoundation.framework */; };
+		456B4EF20CE3DF1DD3768043 /* SleepPauseWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 11B2A9C2A290397A7DDE08BB /* SleepPauseWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		504D7BF47AC103057BD7C1A1 /* ZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847FD14426AF0DEDCC034C17 /* ZoneView.swift */; };
+		534969EF64E242EBA0305989 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E29F05539FACB9223ADC964A /* WidgetKit.framework */; };
+		54511D2A045FB6A8F0AA6C31 /* SilentAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9D4624F2D945136BE26D15 /* SilentAudio.swift */; };
+		56FBBFC429DB65B5098B1D6E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F01DA5233E2748D5A682886D /* RootView.swift */; };
+		5DF9242A51DB839E84E3F170 /* ZoneProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74BF92F345AA0C599A222B8 /* ZoneProtocol.swift */; };
+		5FED6AA795C3E10B9C2895C0 /* AdaptiveANCController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758E588409DCC24A1D8E6D04 /* AdaptiveANCController.swift */; };
+		6158FB23AEBFD160069443AE /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 715BB852952A05D70F1B471D /* CoreBluetooth.framework */; };
+		62FE88AB847749D7465B2DE5 /* SmartAlarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4D344A2856DDF7D69CDFAC /* SmartAlarm.swift */; };
+		63AB4F4B73DA1F4BD8268CC8 /* SmartAlarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4D344A2856DDF7D69CDFAC /* SmartAlarm.swift */; };
+		684277D3BBB4B332CF74451E /* SleepMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E11246CA611926FDE4FB80 /* SleepMessage.swift */; };
+		68D1091AABE50D8B3153B021 /* CommuteMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627CE76B960B62D29B92CA94 /* CommuteMapView.swift */; };
+		694949834CD1433C14BAF7A3 /* SleepPauseWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41833B05765BB3F8AD46181 /* SleepPauseWidgets.swift */; };
+		6A3D10A6556A9B93237DC30D /* ZoneCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FA76CE2FC13E6A3354D854 /* ZoneCrypto.swift */; };
+		6B463AF3232C22E2C3C0BF41 /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19FF44F5FE45993C6962C955 /* AppIntents.framework */; };
+		730077EA1230CFB21F6B9BC0 /* ZoneCloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B9A3C2749D6413B9AE50E4 /* ZoneCloud.swift */; };
+		73F855CF4D6DC86593BB5D52 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23257FFE2C04F9B0A60D097 /* ActivityKit.framework */; };
+		742BBFE91F1C948AC4EA1F84 /* LevelPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A37CDA20FABF8A768437D4F /* LevelPalette.swift */; };
+		74489D296FD6FF20A4D86B7B /* ZoneAQDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBFB0A5A6FC13E4C952DFCE /* ZoneAQDecoder.swift */; };
+		7841EF4078180C75291D757C /* WatchStatusSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28B29763A1926B02743B010 /* WatchStatusSnapshot.swift */; };
+		7988E6B01821E671B1AE52B1 /* MediaPauser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76997ED6E6F0EAB4D3DE47EF /* MediaPauser.swift */; };
+		81467B5ABBEF047F18C6EFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB2278F697283AED59DB0D7 /* ContentView.swift */; };
+		81C40DCA9032EA92B1E11AEB /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591304295D6C5D90C6B51AE /* FocusSession.swift */; };
+		81CC02E84E9A1D9977CC7E84 /* BatteryAlertPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF350681A742E6223AB97DB6 /* BatteryAlertPolicy.swift */; };
+		833EA9325694B8689436EFF7 /* SleepMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506A40DC97874E1DF99980B3 /* SleepMonitor.swift */; };
+		8D1DC0052FE557238BBE157B /* SleepSoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559A47FBAB68C3BCA74A2AD3 /* SleepSoundPlayer.swift */; };
+		8D21991FB6D0E3CB1DE113C9 /* HealthWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AAEFBF1C4BC1CB35776EED5 /* HealthWriter.swift */; };
+		9077036C920A5F3619502215 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991367940EBAD4ACD6AAB607 /* MapKit.framework */; };
+		91E892BF15F54483272665D9 /* WatchStatusSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28B29763A1926B02743B010 /* WatchStatusSnapshot.swift */; };
+		9227416B8732431CF1CFD359 /* Achievements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B58378437153A3A507EB9A /* Achievements.swift */; };
+		92ACC3F1418F1F36000F0D0C /* LevelPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A37CDA20FABF8A768437D4F /* LevelPalette.swift */; };
+		9CB41A2B87028AE7BA24BD91 /* EventLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E033498D8A0C2E3A46B4DFDE /* EventLog.swift */; };
+		A0FE2795B6BD90B791575D3E /* WatchStatusSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28B29763A1926B02743B010 /* WatchStatusSnapshot.swift */; };
+		A2366CAE13B71D3F6D271DD2 /* CommuteModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD1328C16FD9F0DF908EEC /* CommuteModels.swift */; };
+		A6B22C27F1DE2FF174434854 /* WatchConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90511C41677CEE6190E9DAFF /* WatchConnector.swift */; };
+		A7CC1BAA279398EE825ECE3E /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596900BA44599B5E9B001061 /* Theme.swift */; };
+		AB2266926F250206FE4E1423 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7C431E93F27C267B04E148 /* HealthKit.framework */; };
+		AD3F1A45D6331A9500A1AA62 /* CommuteRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813C465362B5258DC5D27F51 /* CommuteRecorder.swift */; };
+		AD9A988C627FB65564839BEB /* SleepOnsetDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232CA05472BB506A65559D32 /* SleepOnsetDetector.swift */; };
+		B53AC7608D83F3E6F28F6908 /* SleepSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18684C317B8FE5689773734 /* SleepSettings.swift */; };
+		BD2021E4E7BBE4FBA9FE1127 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7C431E93F27C267B04E148 /* HealthKit.framework */; };
+		C176D15D0620B1A9BB005E5D /* ZoneSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358E86E20D4EB0B363A11244 /* ZoneSnapshot.swift */; };
+		C546B6A0ADD12A51B1D95FB0 /* MorningSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D719876422F3146B268BB48A /* MorningSummary.swift */; };
+		C6E1803B9697E147C7B0D27F /* SleepPauseComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC929ED51A46D13B274970D /* SleepPauseComplications.swift */; };
+		C78B87E02BC2275032901AAE /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8847261E9C485FD293ED2F33 /* OnboardingView.swift */; };
+		CE641FEC8D2A4474DD02CDE9 /* PhoneConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B22AC85AA941F1ADE4491F /* PhoneConnector.swift */; };
+		CF2784F0AA085608C475823F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE7DC6521DB3A10270B91E1 /* SwiftUI.framework */; };
+		D9F8E987C00E7A651BC0A474 /* SleepPauseWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 27BCBF562EF6D789ADCBA84F /* SleepPauseWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DBF33C98B54B0279098AB0E9 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CA1DBB6EC0F2E1657B24116 /* CoreMotion.framework */; };
+		DDE6A0351D73EECB0DC69E0C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE7DC6521DB3A10270B91E1 /* SwiftUI.framework */; };
+		DEEEB0FB2B44826629263801 /* SleepPauseComplications.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4427A7C4EF156C6906156582 /* SleepPauseComplications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E009D39FEFAA62D7AFB38E1A /* SleepPauseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4526637650E2AD72B3085A73 /* SleepPauseApp.swift */; };
+		E220614A4E1F8D392CF5BA86 /* ZoneActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ED96CF64A1C9AFD3F2CA28F /* ZoneActivityAttributes.swift */; };
+		E96F60CE1E822BD9BF8E13D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55E542D0045C0E19A951D29 /* Security.framework */; };
+		EF41E4C7682EE0AC117A1AD7 /* ZoneSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060319DBE84B6C52790DAB6 /* ZoneSettings.swift */; };
+		EFA506DEEABDC57E1D575602 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BA9B4517A1EC85290D4371 /* AppModel.swift */; };
+		F805F94BE367D2F8E68969DD /* ZoneLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F9BDD10D0528CB7D8FF663 /* ZoneLoginView.swift */; };
+		F8CF1BAE902FCC99CA3754AF /* ZoneExtrasViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2374FF7ADE532A3F076AE58B /* ZoneExtrasViews.swift */; };
+		FAA6A7F658477206C20793A4 /* FanBoostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7D74D8AE4DD88FAD6B76A4 /* FanBoostController.swift */; };
+		FEF1B1C1FC8D6F74BAD3E0DB /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23257FFE2C04F9B0A60D097 /* ActivityKit.framework */; };
+		FEF4B91DFCC234DD374D46A1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E29F05539FACB9223ADC964A /* WidgetKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		323B22025FA9920772FEB302 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 80A1483DE8324B845158F55B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C0A3FE886CEF2E9881180EF4;
+			remoteInfo = SleepPauseComplications;
+		};
+		4A162E4E8E45BC2B165A363F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 80A1483DE8324B845158F55B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81C97EF9A73B58E491B89402;
+			remoteInfo = SleepPauseWatch;
+		};
+		843CB5EB56A95058ACD95F31 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 80A1483DE8324B845158F55B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83FAA58EAFE25FBAF27D5742;
+			remoteInfo = SleepPauseWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8B07BD153FD61A6120B23769 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				DEEEB0FB2B44826629263801 /* SleepPauseComplications.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A2750B777DFEC0B55F99A9C8 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				456B4EF20CE3DF1DD3768043 /* SleepPauseWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB58E4F71C47BA72495FB512 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				D9F8E987C00E7A651BC0A474 /* SleepPauseWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		09E11246CA611926FDE4FB80 /* SleepMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepMessage.swift; sourceTree = "<group>"; };
+		0CC12CB764BDB9F82DC2138B /* NoiseExposureStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoiseExposureStore.swift; sourceTree = "<group>"; };
+		0ED96CF64A1C9AFD3F2CA28F /* ZoneActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneActivityAttributes.swift; sourceTree = "<group>"; };
+		11B2A9C2A290397A7DDE08BB /* SleepPauseWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SleepPauseWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		16F9BDD10D0528CB7D8FF663 /* ZoneLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneLoginView.swift; sourceTree = "<group>"; };
+		1775C1E9F42BABFD23038C6D /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		19FF44F5FE45993C6962C955 /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
+		1E173E1269B0CDB4F34F0CEB /* ZoneDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneDashboard.swift; sourceTree = "<group>"; };
+		232CA05472BB506A65559D32 /* SleepOnsetDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepOnsetDetector.swift; sourceTree = "<group>"; };
+		2374FF7ADE532A3F076AE58B /* ZoneExtrasViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneExtrasViews.swift; sourceTree = "<group>"; };
+		27BCBF562EF6D789ADCBA84F /* SleepPauseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepPauseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C7D6EC35985F62F9C75E01C /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
+		2E3873A476E8F3F62EF2DCB6 /* SleepPause.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SleepPause.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		358E86E20D4EB0B363A11244 /* ZoneSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneSnapshot.swift; sourceTree = "<group>"; };
+		4427A7C4EF156C6906156582 /* SleepPauseComplications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SleepPauseComplications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4526637650E2AD72B3085A73 /* SleepPauseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepPauseApp.swift; sourceTree = "<group>"; };
+		4591304295D6C5D90C6B51AE /* FocusSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSession.swift; sourceTree = "<group>"; };
+		4BB2278F697283AED59DB0D7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		506A40DC97874E1DF99980B3 /* SleepMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepMonitor.swift; sourceTree = "<group>"; };
+		559A47FBAB68C3BCA74A2AD3 /* SleepSoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepSoundPlayer.swift; sourceTree = "<group>"; };
+		596900BA44599B5E9B001061 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5CBFB0A5A6FC13E4C952DFCE /* ZoneAQDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneAQDecoder.swift; sourceTree = "<group>"; };
+		5E4D344A2856DDF7D69CDFAC /* SmartAlarm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartAlarm.swift; sourceTree = "<group>"; };
+		5F3BF47468D658C29DA7F4A8 /* WeeklyReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyReport.swift; sourceTree = "<group>"; };
+		627CE76B960B62D29B92CA94 /* CommuteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteMapView.swift; sourceTree = "<group>"; };
+		6813362803764B567C301010 /* ZoneAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneAutomations.swift; sourceTree = "<group>"; };
+		68239822F8105B9AC254AEB1 /* ZoneIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneIntents.swift; sourceTree = "<group>"; };
+		68355899A2B698BAE5E241EA /* FocusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusManager.swift; sourceTree = "<group>"; };
+		6875209DECCA866B2CA6C360 /* ExposureAccumulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExposureAccumulator.swift; sourceTree = "<group>"; };
+		70FA76CE2FC13E6A3354D854 /* ZoneCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneCrypto.swift; sourceTree = "<group>"; };
+		715BB852952A05D70F1B471D /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		758E588409DCC24A1D8E6D04 /* AdaptiveANCController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveANCController.swift; sourceTree = "<group>"; };
+		76997ED6E6F0EAB4D3DE47EF /* MediaPauser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPauser.swift; sourceTree = "<group>"; };
+		7A37CDA20FABF8A768437D4F /* LevelPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelPalette.swift; sourceTree = "<group>"; };
+		7AAEFBF1C4BC1CB35776EED5 /* HealthWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthWriter.swift; sourceTree = "<group>"; };
+		7CA1DBB6EC0F2E1657B24116 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		813C465362B5258DC5D27F51 /* CommuteRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteRecorder.swift; sourceTree = "<group>"; };
+		847FD14426AF0DEDCC034C17 /* ZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneView.swift; sourceTree = "<group>"; };
+		86B58378437153A3A507EB9A /* Achievements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievements.swift; sourceTree = "<group>"; };
+		86DD1328C16FD9F0DF908EEC /* CommuteModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteModels.swift; sourceTree = "<group>"; };
+		8847261E9C485FD293ED2F33 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		89358B671E36929F90213415 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		90511C41677CEE6190E9DAFF /* WatchConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnector.swift; sourceTree = "<group>"; };
+		9060319DBE84B6C52790DAB6 /* ZoneSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneSettings.swift; sourceTree = "<group>"; };
+		928D4C06E12E9CD15ADD3404 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityController.swift; sourceTree = "<group>"; };
+		94D73DAD1578DE1ACE9E0CEF /* SleepExtrasStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepExtrasStore.swift; sourceTree = "<group>"; };
+		96BA9B4517A1EC85290D4371 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		991367940EBAD4ACD6AAB607 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A23257FFE2C04F9B0A60D097 /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = System/Library/Frameworks/ActivityKit.framework; sourceTree = SDKROOT; };
+		A3314352CBDC913128346AAE /* SleepPauseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepPauseWatchApp.swift; sourceTree = "<group>"; };
+		ACC929ED51A46D13B274970D /* SleepPauseComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepPauseComplications.swift; sourceTree = "<group>"; };
+		AF7D74D8AE4DD88FAD6B76A4 /* FanBoostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanBoostController.swift; sourceTree = "<group>"; };
+		AF9D4624F2D945136BE26D15 /* SilentAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilentAudio.swift; sourceTree = "<group>"; };
+		B28B29763A1926B02743B010 /* WatchStatusSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchStatusSnapshot.swift; sourceTree = "<group>"; };
+		B41833B05765BB3F8AD46181 /* SleepPauseWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepPauseWidgets.swift; sourceTree = "<group>"; };
+		C0B9A3C2749D6413B9AE50E4 /* ZoneCloud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneCloud.swift; sourceTree = "<group>"; };
+		C6B22AC85AA941F1ADE4491F /* PhoneConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneConnector.swift; sourceTree = "<group>"; };
+		C74BF92F345AA0C599A222B8 /* ZoneProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneProtocol.swift; sourceTree = "<group>"; };
+		CDB18B5A409A0D3737EA8359 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		D719876422F3146B268BB48A /* MorningSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningSummary.swift; sourceTree = "<group>"; };
+		D89890B61245F310927DC08E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DE7C431E93F27C267B04E148 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		E02FB479AF037354B1E7E50B /* NoiseSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoiseSynth.swift; sourceTree = "<group>"; };
+		E033498D8A0C2E3A46B4DFDE /* EventLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLog.swift; sourceTree = "<group>"; };
+		E29F05539FACB9223ADC964A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		E55E542D0045C0E19A951D29 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		EF350681A742E6223AB97DB6 /* BatteryAlertPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryAlertPolicy.swift; sourceTree = "<group>"; };
+		F01DA5233E2748D5A682886D /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		F18684C317B8FE5689773734 /* SleepSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepSettings.swift; sourceTree = "<group>"; };
+		F5F6A4077F79D67C6A7A76F7 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
+		FCE7DC6521DB3A10270B91E1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		FFE308BE59C06E4357030381 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3DAFFEBC274600660F36FC3F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD2021E4E7BBE4FBA9FE1127 /* HealthKit.framework in Frameworks */,
+				30A1EED9337E8FA462BA15E0 /* WatchConnectivity.framework in Frameworks */,
+				DBF33C98B54B0279098AB0E9 /* CoreMotion.framework in Frameworks */,
+				534969EF64E242EBA0305989 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CA4D14D2C5064DB8A6CCE96 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEF4B91DFCC234DD374D46A1 /* WidgetKit.framework in Frameworks */,
+				DDE6A0351D73EECB0DC69E0C /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62992A2013DAF065430F9DDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEF1B1C1FC8D6F74BAD3E0DB /* ActivityKit.framework in Frameworks */,
+				34CB4F16A89C42302EE81074 /* WidgetKit.framework in Frameworks */,
+				AB2266926F250206FE4E1423 /* HealthKit.framework in Frameworks */,
+				2251569A1D8EFBA68399DB22 /* WatchConnectivity.framework in Frameworks */,
+				42C730CAEDB7EE3A074204A7 /* AVFoundation.framework in Frameworks */,
+				2127608349FDDE884C1CD92A /* MediaPlayer.framework in Frameworks */,
+				6158FB23AEBFD160069443AE /* CoreBluetooth.framework in Frameworks */,
+				4284DD71B77C3B1FAB70B3A7 /* CoreLocation.framework in Frameworks */,
+				9077036C920A5F3619502215 /* MapKit.framework in Frameworks */,
+				389A0AA979E752EF520EFB16 /* UserNotifications.framework in Frameworks */,
+				6B463AF3232C22E2C3C0BF41 /* AppIntents.framework in Frameworks */,
+				E96F60CE1E822BD9BF8E13D4 /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE6AF7B5393EB0ACAB69A294 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F059E3A8A244424E9390C6D /* WidgetKit.framework in Frameworks */,
+				CF2784F0AA085608C475823F /* SwiftUI.framework in Frameworks */,
+				73F855CF4D6DC86593BB5D52 /* ActivityKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0CF1D9B8E09FD33C5C426A9C /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				86B58378437153A3A507EB9A /* Achievements.swift */,
+				D719876422F3146B268BB48A /* MorningSummary.swift */,
+				E02FB479AF037354B1E7E50B /* NoiseSynth.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		25EDFC49ED66E7893958E9E7 = {
+			isa = PBXGroup;
+			children = (
+				B371BC1F2FDF40FAAA085F41 /* iOS */,
+				99545F9A9E7490553AEFB491 /* Shared */,
+				7122AD18040EE1DFAD274723 /* Watch */,
+				44883535B0C3CB98635B1A08 /* WatchWidgets */,
+				E6E468E99CD624411BE3AFB8 /* Widgets */,
+				A852848341CD11923C3F02C3 /* WidgetShared */,
+				70CFEA686477759B089B6334 /* Frameworks */,
+				7A71DECA25FFDE47E11E45E9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A3769E11D0146183B2C5D13 /* Zone */ = {
+			isa = PBXGroup;
+			children = (
+				E2787FCB2FEBD6FD7F3FE3E3 /* BLE */,
+				CB35254A026D5BFCF257B66D /* Core */,
+				6A14E34F0782B122D2F63017 /* Extras */,
+				840A18494511D644A8949A2C /* Features */,
+				9F5E8863888134CB6080AF11 /* Views */,
+			);
+			path = Zone;
+			sourceTree = "<group>";
+		};
+		44883535B0C3CB98635B1A08 /* WatchWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				ACC929ED51A46D13B274970D /* SleepPauseComplications.swift */,
+			);
+			path = WatchWidgets;
+			sourceTree = "<group>";
+		};
+		6A14E34F0782B122D2F63017 /* Extras */ = {
+			isa = PBXGroup;
+			children = (
+				68355899A2B698BAE5E241EA /* FocusManager.swift */,
+				928D4C06E12E9CD15ADD3404 /* LiveActivityController.swift */,
+				6813362803764B567C301010 /* ZoneAutomations.swift */,
+			);
+			path = Extras;
+			sourceTree = "<group>";
+		};
+		70CFEA686477759B089B6334 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A23257FFE2C04F9B0A60D097 /* ActivityKit.framework */,
+				19FF44F5FE45993C6962C955 /* AppIntents.framework */,
+				CDB18B5A409A0D3737EA8359 /* AVFoundation.framework */,
+				715BB852952A05D70F1B471D /* CoreBluetooth.framework */,
+				D89890B61245F310927DC08E /* CoreLocation.framework */,
+				7CA1DBB6EC0F2E1657B24116 /* CoreMotion.framework */,
+				DE7C431E93F27C267B04E148 /* HealthKit.framework */,
+				991367940EBAD4ACD6AAB607 /* MapKit.framework */,
+				FFE308BE59C06E4357030381 /* MediaPlayer.framework */,
+				E55E542D0045C0E19A951D29 /* Security.framework */,
+				FCE7DC6521DB3A10270B91E1 /* SwiftUI.framework */,
+				1775C1E9F42BABFD23038C6D /* UserNotifications.framework */,
+				2C7D6EC35985F62F9C75E01C /* WatchConnectivity.framework */,
+				E29F05539FACB9223ADC964A /* WidgetKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7122AD18040EE1DFAD274723 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				4BB2278F697283AED59DB0D7 /* ContentView.swift */,
+				506A40DC97874E1DF99980B3 /* SleepMonitor.swift */,
+				A3314352CBDC913128346AAE /* SleepPauseWatchApp.swift */,
+				F18684C317B8FE5689773734 /* SleepSettings.swift */,
+				90511C41677CEE6190E9DAFF /* WatchConnector.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		7A71DECA25FFDE47E11E45E9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E3873A476E8F3F62EF2DCB6 /* SleepPause.app */,
+				4427A7C4EF156C6906156582 /* SleepPauseComplications.appex */,
+				27BCBF562EF6D789ADCBA84F /* SleepPauseWatch.app */,
+				11B2A9C2A290397A7DDE08BB /* SleepPauseWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		840A18494511D644A8949A2C /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				813C465362B5258DC5D27F51 /* CommuteRecorder.swift */,
+				0CC12CB764BDB9F82DC2138B /* NoiseExposureStore.swift */,
+				68239822F8105B9AC254AEB1 /* ZoneIntents.swift */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		99545F9A9E7490553AEFB491 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				09E11246CA611926FDE4FB80 /* SleepMessage.swift */,
+				232CA05472BB506A65559D32 /* SleepOnsetDetector.swift */,
+				5E4D344A2856DDF7D69CDFAC /* SmartAlarm.swift */,
+				B28B29763A1926B02743B010 /* WatchStatusSnapshot.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		9F5E8863888134CB6080AF11 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				627CE76B960B62D29B92CA94 /* CommuteMapView.swift */,
+				F01DA5233E2748D5A682886D /* RootView.swift */,
+				1E173E1269B0CDB4F34F0CEB /* ZoneDashboard.swift */,
+				2374FF7ADE532A3F076AE58B /* ZoneExtrasViews.swift */,
+				16F9BDD10D0528CB7D8FF663 /* ZoneLoginView.swift */,
+				847FD14426AF0DEDCC034C17 /* ZoneView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A852848341CD11923C3F02C3 /* WidgetShared */ = {
+			isa = PBXGroup;
+			children = (
+				7A37CDA20FABF8A768437D4F /* LevelPalette.swift */,
+				0ED96CF64A1C9AFD3F2CA28F /* ZoneActivityAttributes.swift */,
+				358E86E20D4EB0B363A11244 /* ZoneSnapshot.swift */,
+			);
+			path = WidgetShared;
+			sourceTree = "<group>";
+		};
+		B371BC1F2FDF40FAAA085F41 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				96BA9B4517A1EC85290D4371 /* AppModel.swift */,
+				89358B671E36929F90213415 /* ContentView.swift */,
+				E033498D8A0C2E3A46B4DFDE /* EventLog.swift */,
+				7AAEFBF1C4BC1CB35776EED5 /* HealthWriter.swift */,
+				76997ED6E6F0EAB4D3DE47EF /* MediaPauser.swift */,
+				C6B22AC85AA941F1ADE4491F /* PhoneConnector.swift */,
+				AF9D4624F2D945136BE26D15 /* SilentAudio.swift */,
+				4526637650E2AD72B3085A73 /* SleepPauseApp.swift */,
+				0CF1D9B8E09FD33C5C426A9C /* Core */,
+				CF5032D682A60AFDC3939C6A /* Design */,
+				E58FE9AB06D8836530F715F3 /* Onboarding */,
+				DD24AF71A666916B711A32B6 /* Sleep */,
+				2A3769E11D0146183B2C5D13 /* Zone */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		CB35254A026D5BFCF257B66D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				758E588409DCC24A1D8E6D04 /* AdaptiveANCController.swift */,
+				EF350681A742E6223AB97DB6 /* BatteryAlertPolicy.swift */,
+				86DD1328C16FD9F0DF908EEC /* CommuteModels.swift */,
+				6875209DECCA866B2CA6C360 /* ExposureAccumulator.swift */,
+				AF7D74D8AE4DD88FAD6B76A4 /* FanBoostController.swift */,
+				4591304295D6C5D90C6B51AE /* FocusSession.swift */,
+				5F3BF47468D658C29DA7F4A8 /* WeeklyReport.swift */,
+				5CBFB0A5A6FC13E4C952DFCE /* ZoneAQDecoder.swift */,
+				C74BF92F345AA0C599A222B8 /* ZoneProtocol.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		CF5032D682A60AFDC3939C6A /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				596900BA44599B5E9B001061 /* Theme.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		DD24AF71A666916B711A32B6 /* Sleep */ = {
+			isa = PBXGroup;
+			children = (
+				94D73DAD1578DE1ACE9E0CEF /* SleepExtrasStore.swift */,
+				559A47FBAB68C3BCA74A2AD3 /* SleepSoundPlayer.swift */,
+			);
+			path = Sleep;
+			sourceTree = "<group>";
+		};
+		E2787FCB2FEBD6FD7F3FE3E3 /* BLE */ = {
+			isa = PBXGroup;
+			children = (
+				C0B9A3C2749D6413B9AE50E4 /* ZoneCloud.swift */,
+				70FA76CE2FC13E6A3354D854 /* ZoneCrypto.swift */,
+				F5F6A4077F79D67C6A7A76F7 /* ZoneManager.swift */,
+				9060319DBE84B6C52790DAB6 /* ZoneSettings.swift */,
+			);
+			path = BLE;
+			sourceTree = "<group>";
+		};
+		E58FE9AB06D8836530F715F3 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				8847261E9C485FD293ED2F33 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		E6E468E99CD624411BE3AFB8 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				B41833B05765BB3F8AD46181 /* SleepPauseWidgets.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		81C97EF9A73B58E491B89402 /* SleepPauseWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26D6981FE53D8DBF3BEC9E0C /* Build configuration list for PBXNativeTarget "SleepPauseWatch" */;
+			buildPhases = (
+				93F6B55270BE2DB8783C7868 /* Sources */,
+				3DAFFEBC274600660F36FC3F /* Frameworks */,
+				8B07BD153FD61A6120B23769 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C020C5574B602ECA6B1AF8C9 /* PBXTargetDependency */,
+			);
+			name = SleepPauseWatch;
+			packageProductDependencies = (
+			);
+			productName = SleepPauseWatch;
+			productReference = 27BCBF562EF6D789ADCBA84F /* SleepPauseWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		83FAA58EAFE25FBAF27D5742 /* SleepPauseWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07DAB849EA612772EF399F8A /* Build configuration list for PBXNativeTarget "SleepPauseWidgets" */;
+			buildPhases = (
+				0FFE3CBA29E9258CFE3592DD /* Sources */,
+				CE6AF7B5393EB0ACAB69A294 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SleepPauseWidgets;
+			packageProductDependencies = (
+			);
+			productName = SleepPauseWidgets;
+			productReference = 11B2A9C2A290397A7DDE08BB /* SleepPauseWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		C0A3FE886CEF2E9881180EF4 /* SleepPauseComplications */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDD4979927F41604AD7A7DB9 /* Build configuration list for PBXNativeTarget "SleepPauseComplications" */;
+			buildPhases = (
+				A328286CDE3376E29DFBE00E /* Sources */,
+				4CA4D14D2C5064DB8A6CCE96 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SleepPauseComplications;
+			packageProductDependencies = (
+			);
+			productName = SleepPauseComplications;
+			productReference = 4427A7C4EF156C6906156582 /* SleepPauseComplications.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D8FB769A43AD2567807E56FF /* SleepPause */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC3374571A99C484BE0F2D99 /* Build configuration list for PBXNativeTarget "SleepPause" */;
+			buildPhases = (
+				910E532B91BCDC5DA79F1112 /* Sources */,
+				62992A2013DAF065430F9DDF /* Frameworks */,
+				A2750B777DFEC0B55F99A9C8 /* Embed Foundation Extensions */,
+				EB58E4F71C47BA72495FB512 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1E36963BD578919C7D3C0A5 /* PBXTargetDependency */,
+				CDDF0B71F8BDD517FA5E5F70 /* PBXTargetDependency */,
+			);
+			name = SleepPause;
+			packageProductDependencies = (
+			);
+			productName = SleepPause;
+			productReference = 2E3873A476E8F3F62EF2DCB6 /* SleepPause.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		80A1483DE8324B845158F55B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					81C97EF9A73B58E491B89402 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					83FAA58EAFE25FBAF27D5742 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					C0A3FE886CEF2E9881180EF4 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					D8FB769A43AD2567807E56FF = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F1987A17B9A30D3D09098C31 /* Build configuration list for PBXProject "SleepPause" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 25EDFC49ED66E7893958E9E7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 7A71DECA25FFDE47E11E45E9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D8FB769A43AD2567807E56FF /* SleepPause */,
+				83FAA58EAFE25FBAF27D5742 /* SleepPauseWidgets */,
+				81C97EF9A73B58E491B89402 /* SleepPauseWatch */,
+				C0A3FE886CEF2E9881180EF4 /* SleepPauseComplications */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0FFE3CBA29E9258CFE3592DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92ACC3F1418F1F36000F0D0C /* LevelPalette.swift in Sources */,
+				694949834CD1433C14BAF7A3 /* SleepPauseWidgets.swift in Sources */,
+				3EAAB85E6C487118E4C5C455 /* ZoneActivityAttributes.swift in Sources */,
+				C176D15D0620B1A9BB005E5D /* ZoneSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		910E532B91BCDC5DA79F1112 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9227416B8732431CF1CFD359 /* Achievements.swift in Sources */,
+				5FED6AA795C3E10B9C2895C0 /* AdaptiveANCController.swift in Sources */,
+				EFA506DEEABDC57E1D575602 /* AppModel.swift in Sources */,
+				81CC02E84E9A1D9977CC7E84 /* BatteryAlertPolicy.swift in Sources */,
+				68D1091AABE50D8B3153B021 /* CommuteMapView.swift in Sources */,
+				A2366CAE13B71D3F6D271DD2 /* CommuteModels.swift in Sources */,
+				AD3F1A45D6331A9500A1AA62 /* CommuteRecorder.swift in Sources */,
+				11EBBC131F7669AA3914A91C /* ContentView.swift in Sources */,
+				9CB41A2B87028AE7BA24BD91 /* EventLog.swift in Sources */,
+				0B9E33A29A1E1205BDD07EDA /* ExposureAccumulator.swift in Sources */,
+				FAA6A7F658477206C20793A4 /* FanBoostController.swift in Sources */,
+				2A1B397C20F44FD90536F548 /* FocusManager.swift in Sources */,
+				81C40DCA9032EA92B1E11AEB /* FocusSession.swift in Sources */,
+				8D21991FB6D0E3CB1DE113C9 /* HealthWriter.swift in Sources */,
+				742BBFE91F1C948AC4EA1F84 /* LevelPalette.swift in Sources */,
+				3EB6A209498F351FDF110C0F /* LiveActivityController.swift in Sources */,
+				7988E6B01821E671B1AE52B1 /* MediaPauser.swift in Sources */,
+				C546B6A0ADD12A51B1D95FB0 /* MorningSummary.swift in Sources */,
+				2678F0309F06B85660B82501 /* NoiseExposureStore.swift in Sources */,
+				3F38CEBBF8F39644FE68BEAF /* NoiseSynth.swift in Sources */,
+				C78B87E02BC2275032901AAE /* OnboardingView.swift in Sources */,
+				CE641FEC8D2A4474DD02CDE9 /* PhoneConnector.swift in Sources */,
+				56FBBFC429DB65B5098B1D6E /* RootView.swift in Sources */,
+				54511D2A045FB6A8F0AA6C31 /* SilentAudio.swift in Sources */,
+				1F56DE8D54EB2C9368832B1B /* SleepExtrasStore.swift in Sources */,
+				684277D3BBB4B332CF74451E /* SleepMessage.swift in Sources */,
+				03CEA127DA3D140FB130896C /* SleepOnsetDetector.swift in Sources */,
+				E009D39FEFAA62D7AFB38E1A /* SleepPauseApp.swift in Sources */,
+				8D1DC0052FE557238BBE157B /* SleepSoundPlayer.swift in Sources */,
+				63AB4F4B73DA1F4BD8268CC8 /* SmartAlarm.swift in Sources */,
+				A7CC1BAA279398EE825ECE3E /* Theme.swift in Sources */,
+				91E892BF15F54483272665D9 /* WatchStatusSnapshot.swift in Sources */,
+				2305CC39F1B4BA84CB18DD0E /* WeeklyReport.swift in Sources */,
+				74489D296FD6FF20A4D86B7B /* ZoneAQDecoder.swift in Sources */,
+				E220614A4E1F8D392CF5BA86 /* ZoneActivityAttributes.swift in Sources */,
+				2B1BC7EA4CF33A0B1BF0D1CD /* ZoneAutomations.swift in Sources */,
+				730077EA1230CFB21F6B9BC0 /* ZoneCloud.swift in Sources */,
+				6A3D10A6556A9B93237DC30D /* ZoneCrypto.swift in Sources */,
+				1B726CA35CCF3DA9BE6968FE /* ZoneDashboard.swift in Sources */,
+				F8CF1BAE902FCC99CA3754AF /* ZoneExtrasViews.swift in Sources */,
+				32565524113E194076DA177A /* ZoneIntents.swift in Sources */,
+				F805F94BE367D2F8E68969DD /* ZoneLoginView.swift in Sources */,
+				27D84F422BC134DBF860829D /* ZoneManager.swift in Sources */,
+				5DF9242A51DB839E84E3F170 /* ZoneProtocol.swift in Sources */,
+				EF41E4C7682EE0AC117A1AD7 /* ZoneSettings.swift in Sources */,
+				19AB967F9523EA5C8F6210D4 /* ZoneSnapshot.swift in Sources */,
+				504D7BF47AC103057BD7C1A1 /* ZoneView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93F6B55270BE2DB8783C7868 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81467B5ABBEF047F18C6EFDC /* ContentView.swift in Sources */,
+				3BE89CD73376851CF035F330 /* SleepMessage.swift in Sources */,
+				833EA9325694B8689436EFF7 /* SleepMonitor.swift in Sources */,
+				AD9A988C627FB65564839BEB /* SleepOnsetDetector.swift in Sources */,
+				240154016B777B7EB2176A3B /* SleepPauseWatchApp.swift in Sources */,
+				B53AC7608D83F3E6F28F6908 /* SleepSettings.swift in Sources */,
+				62FE88AB847749D7465B2DE5 /* SmartAlarm.swift in Sources */,
+				A6B22C27F1DE2FF174434854 /* WatchConnector.swift in Sources */,
+				7841EF4078180C75291D757C /* WatchStatusSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A328286CDE3376E29DFBE00E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C6E1803B9697E147C7B0D27F /* SleepPauseComplications.swift in Sources */,
+				A0FE2795B6BD90B791575D3E /* WatchStatusSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1E36963BD578919C7D3C0A5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81C97EF9A73B58E491B89402 /* SleepPauseWatch */;
+			targetProxy = 4A162E4E8E45BC2B165A363F /* PBXContainerItemProxy */;
+		};
+		C020C5574B602ECA6B1AF8C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C0A3FE886CEF2E9881180EF4 /* SleepPauseComplications */;
+			targetProxy = 323B22025FA9920772FEB302 /* PBXContainerItemProxy */;
+		};
+		CDDF0B71F8BDD517FA5E5F70 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83FAA58EAFE25FBAF27D5742 /* SleepPauseWidgets */;
+			targetProxy = 843CB5EB56A95058ACD95F31 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		10C17FF9C64B422FA0027F62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Watch/SleepPauseWatch.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Watch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).watchkitapp";
+				PRODUCT_NAME = SleepPauseWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		1E66F142BC517221104A4389 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = WatchWidgets/SleepPauseComplications.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).watchkitapp.complications";
+				PRODUCT_NAME = SleepPauseComplications;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		24E92867E10F5D7DB078369D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Watch/SleepPauseWatch.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Watch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).watchkitapp";
+				PRODUCT_NAME = SleepPauseWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		4198EFE537D694634AAD07D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Widgets/SleepPauseWidgets.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).widgets";
+				PRODUCT_NAME = SleepPauseWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		70AD5D37D64569890A480E5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = WatchWidgets/SleepPauseComplications.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).watchkitapp.complications";
+				PRODUCT_NAME = SleepPauseComplications;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		7EF9E408576B32556918C9CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BASE_BUNDLE_ID = com.example.sleeppause;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		88A17EBBDC5C82E8FBEF0AEB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BASE_BUNDLE_ID = com.example.sleeppause;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		99E1F74B8C18A85544F7FA0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iOS/SleepPause.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID)";
+				PRODUCT_NAME = SleepPause;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A7A3F1967865A16317EB60DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iOS/SleepPause.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID)";
+				PRODUCT_NAME = SleepPause;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E717751341F525BE409D99B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Widgets/SleepPauseWidgets.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BASE_BUNDLE_ID).widgets";
+				PRODUCT_NAME = SleepPauseWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07DAB849EA612772EF399F8A /* Build configuration list for PBXNativeTarget "SleepPauseWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4198EFE537D694634AAD07D9 /* Debug */,
+				E717751341F525BE409D99B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		26D6981FE53D8DBF3BEC9E0C /* Build configuration list for PBXNativeTarget "SleepPauseWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24E92867E10F5D7DB078369D /* Debug */,
+				10C17FF9C64B422FA0027F62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EC3374571A99C484BE0F2D99 /* Build configuration list for PBXNativeTarget "SleepPause" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99E1F74B8C18A85544F7FA0D /* Debug */,
+				A7A3F1967865A16317EB60DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EDD4979927F41604AD7A7DB9 /* Build configuration list for PBXNativeTarget "SleepPauseComplications" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				70AD5D37D64569890A480E5E /* Debug */,
+				1E66F142BC517221104A4389 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F1987A17B9A30D3D09098C31 /* Build configuration list for PBXProject "SleepPause" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7EF9E408576B32556918C9CA /* Debug */,
+				88A17EBBDC5C82E8FBEF0AEB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 80A1483DE8324B845158F55B /* Project object */;
+}

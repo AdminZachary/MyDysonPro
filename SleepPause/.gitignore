@@ -1,0 +1,8 @@
+.build-check/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+ci-logs/
+*.ipa
+*.xcarchive
