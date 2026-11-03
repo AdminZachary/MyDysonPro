@@ -27,9 +27,7 @@ struct WidgetScreenshotPage: View {
     }
 
     private func tile(family: WidgetFamily) -> some View {
-        ZoneWidgetView(entry: entry)
-            .environment(\.widgetFamily, family)
-            .environment(\.widgetRenderingMode, .fullColor)
+        ZoneWidgetView(entry: entry, familyOverride: family, renderingOverride: .fullColor)
             .padding(12)
             .frame(maxWidth: family == .systemMedium ? .infinity : 170,
                    minHeight: family == .systemMedium ? 158 : 158,
