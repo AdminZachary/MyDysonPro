@@ -134,9 +134,15 @@ def emit(key, value):
 emit("PHONE_UDID", phone_udid)
 emit("PHONE_NAME", phone_name)
 emit("PHONE_RUNTIME", ios_version)
+watch_types = [t for t in types if "Ultra" in t.get("name", "") and "Watch" in t.get("name", "")]
+if not watch_types:
+    watch_types = [t for t in types if "Watch" in t.get("name", "")]
 emit("WATCH_UDID", watch_udid)
 emit("WATCH_NAME", watch_name)
 emit("WATCH_RUNTIME", watch.get("version") or watch.get("name"))
+emit("WATCH_RUNTIME_ID", watch["identifier"])
+emit("WATCH_TYPE_ID", watch_types[0]["identifier"] if watch_types else "")
+emit("WATCH_UDIDS", " ".join(d["udid"] for d in watches[:8]))
 PY
 
 # shellcheck disable=SC1091
@@ -247,7 +253,24 @@ for appearance in light dark; do
   done
 done
 
-boot "$WATCH_UDID"
+boot_watch() {
+  local udid
+  for udid in $WATCH_UDIDS "$WATCH_UDID"; do
+    [[ -n "$udid" ]] || continue
+    echo "boot watch $udid"
+    xcrun simctl shutdown "$udid" >/dev/null 2>&1 || true
+    if xcrun simctl boot "$udid" && xcrun simctl bootstatus "$udid" -b; then
+      WATCH_UDID="$udid"
+      return 0
+    fi
+  done
+  echo "creating $WATCH_TYPE_ID on $WATCH_RUNTIME_ID"
+  WATCH_UDID="$(xcrun simctl create "SleepPause Watch Shot" "$WATCH_TYPE_ID" "$WATCH_RUNTIME_ID")"
+  xcrun simctl boot "$WATCH_UDID"
+  xcrun simctl bootstatus "$WATCH_UDID" -b
+}
+
+boot_watch
 prepare_language "$WATCH_UDID"
 codesign --force --deep --sign - "$WATCH_APP"
 xcrun simctl install "$WATCH_UDID" "$WATCH_APP"
