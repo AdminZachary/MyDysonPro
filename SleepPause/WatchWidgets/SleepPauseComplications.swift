@@ -34,7 +34,11 @@ struct SleepStatusComplication: Widget {
         }
         .configurationDisplayName("SleepPause")
         .description("监测状态和智能闹钟")
+        #if os(watchOS)
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
+        #else
+        .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
+        #endif
     }
 }
 
@@ -47,9 +51,11 @@ struct ComplicationView: View {
         switch family {
         case .accessoryInline:
             Label(s.alarm.map { "\(s.title) · ⏰\($0.formatted(date: .omitted, time: .shortened))" } ?? s.title, systemImage: s.symbol)
+        #if os(watchOS)
         case .accessoryCorner:
             Image(systemName: s.symbol).font(.title3).widgetAccentable()
                 .widgetLabel { Text(s.title) }
+        #endif
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
                 Label("SleepPause", systemImage: s.symbol).font(.headline).widgetAccentable()

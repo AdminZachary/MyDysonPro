@@ -116,8 +116,6 @@ schemes:
       targets:
         SleepPause: all
         SleepPauseWidgets: all
-        SleepPauseWatch: all
-        SleepPauseComplications: all
     run:
       config: Debug
     archive:

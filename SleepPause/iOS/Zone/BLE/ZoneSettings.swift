@@ -36,7 +36,8 @@ final class ZoneSettings: ObservableObject {
     }
 
     private init() {
-        func b(_ k: String, _ def: Bool) -> Bool { d.object(forKey: k) == nil ? def : d.bool(forKey: k) }
+        let store = UserDefaults.standard
+        func b(_ k: String, _ def: Bool) -> Bool { store.object(forKey: k) == nil ? def : store.bool(forKey: k) }
         moduleEnabled = b("zone.enabled", false)
         sleepFanOff = b("zone.sleepFanOff", true)
         sleepANCOff = b("zone.sleepANCOff.v2", false)   // 默认不关降噪（用户要求）
@@ -45,16 +46,16 @@ final class ZoneSettings: ObservableObject {
         noiseAlerts = b("zone.noiseAlerts", true)
         commuteRecording = b("zone.commute", false)
         adaptiveEnabled = b("zone.adaptive", false)
-        adaptive = (d.data(forKey: "zone.adaptiveConfig")).flatMap { try? JSONDecoder().decode(AdaptiveANCConfig.self, from: $0) }
+        adaptive = (store.data(forKey: "zone.adaptiveConfig")).flatMap { try? JSONDecoder().decode(AdaptiveANCConfig.self, from: $0) }
             ?? AdaptiveANCConfig()
-        cloudHost = d.string(forKey: "zone.cloudHost") ?? ZoneCloud.defaultHost
+        cloudHost = store.string(forKey: "zone.cloudHost") ?? ZoneCloud.defaultHost
         fanBoostEnabled = b("zone.fanBoost", false)          // off by default: depends on unverified 201D
-        fanBoost = d.data(forKey: "zone.fanBoostConfig").flatMap { try? JSONDecoder().decode(FanBoostConfig.self, from: $0) }
+        fanBoost = store.data(forKey: "zone.fanBoostConfig").flatMap { try? JSONDecoder().decode(FanBoostConfig.self, from: $0) }
             ?? FanBoostConfig()
         batteryAlerts = b("zone.batteryAlerts", true)
         liveActivityAuto = b("zone.liveActivityAuto", true)
         weeklyReport = b("zone.weeklyReport", true)
-        focus = d.data(forKey: "zone.focusConfig").flatMap { try? JSONDecoder().decode(FocusConfig.self, from: $0) }
+        focus = store.data(forKey: "zone.focusConfig").flatMap { try? JSONDecoder().decode(FocusConfig.self, from: $0) }
             ?? FocusConfig()
     }
 }

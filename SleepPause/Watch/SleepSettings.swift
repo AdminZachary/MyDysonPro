@@ -19,20 +19,21 @@ final class SleepSettings: ObservableObject {
     }
 
     private init() {
-        let d = SleepDetectorConfig()
+        let store = UserDefaults.standard
+        let config = SleepDetectorConfig()
         func dbl(_ key: String, _ fallback: Double) -> Double {
-            defaults.object(forKey: key) == nil ? fallback : defaults.double(forKey: key)
+            store.object(forKey: key) == nil ? fallback : store.double(forKey: key)
         }
         func bool(_ key: String, _ fallback: Bool) -> Bool {
-            defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
+            store.object(forKey: key) == nil ? fallback : store.bool(forKey: key)
         }
-        stillMinutes = dbl("stillMinutes", d.stillMinutes)
-        hrDropPercent = dbl("hrDropPercent", d.hrDropPercent)
-        baselineMinutes = dbl("baselineMinutes", d.baselineMinutes)
-        movementThresholdG = dbl("movementThresholdG", d.movementThresholdG)
-        requireHeartRate = bool("requireHeartRate", d.requireHeartRate)
+        stillMinutes = dbl("stillMinutes", config.stillMinutes)
+        hrDropPercent = dbl("hrDropPercent", config.hrDropPercent)
+        baselineMinutes = dbl("baselineMinutes", config.baselineMinutes)
+        movementThresholdG = dbl("movementThresholdG", config.movementThresholdG)
+        requireHeartRate = bool("requireHeartRate", config.requireHeartRate)
         endSessionAfterDetection = bool("endSessionAfterDetection", true)
-        alarm = defaults.data(forKey: "smartAlarm").flatMap { try? JSONDecoder().decode(SmartAlarmConfig.self, from: $0) }
+        alarm = store.data(forKey: "smartAlarm").flatMap { try? JSONDecoder().decode(SmartAlarmConfig.self, from: $0) }
             ?? SmartAlarmConfig()
     }
 
