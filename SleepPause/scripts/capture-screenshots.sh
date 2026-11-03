@@ -74,18 +74,34 @@ def watch_key(name):
         rank = 2
     return (rank, -number)
 
-ios = newest("iOS")
+def runtime_version(key):
+    if m := re.search(r"iOS[- ](\d+)(?:[.-](\d+))?", key):
+        return (int(m.group(1)), int(m.group(2) or 0))
+    if m := re.search(r"watchOS[- ](\d+)(?:[.-](\d+))?", key):
+        return (int(m.group(1)), int(m.group(2) or 0))
+    return (0, 0)
+
+def collect(platform, pred):
+    rows = []
+    for key, devs in devices.items():
+        if platform not in key:
+            continue
+        ver = runtime_version(key)
+        for dev in devs:
+            if dev.get("isAvailable", True) and pred(dev.get("name", "")):
+                rows.append((ver, dev))
+    return rows
+
+phones = [row for row in collect("iOS", lambda n: n.startswith("iPhone")) if row[0][0] == 27]
+if not phones:
+    phones = collect("iOS", lambda n: n.startswith("iPhone"))
+phones.sort(key=lambda row: (iphone_key(row[1]["name"]), tuple(-n for n in row[0])))
+print("iPhone candidates:", file=sys.stderr)
+for ver, dev in phones:
+    print(f"  {dev.get('name')} iOS {ver}", file=sys.stderr)
+
 watch = newest("watchOS")
-print("iOS devices:", file=sys.stderr)
-for dev in existing(ios, lambda n: "iPhone" in n):
-    print(f"  {dev.get('name')}", file=sys.stderr)
-phones = existing(ios, lambda n: "iPhone" in n and re.search(r"\bPro\b", n) and "Duo" not in n)
-if not phones:
-    phones = existing(ios, lambda n: n.startswith("iPhone") and "Duo" not in n)
-if not phones:
-    phones = existing(ios, lambda n: n.startswith("iPhone"))
 watches = existing(watch, lambda n: "Watch" in n)
-phones.sort(key=lambda d: iphone_key(d["name"]))
 watches.sort(key=lambda d: watch_key(d["name"]))
 
 def create(name, runtime, type_pred):
@@ -99,10 +115,13 @@ def create(name, runtime, type_pred):
     print(f"created {name} {match[0]['name']} {udid}", file=sys.stderr)
     return udid, match[0]["name"]
 
+ios = newest("iOS")
 if phones:
-    phone_udid, phone_name = phones[0]["udid"], phones[0]["name"]
+    phone_udid, phone_name = phones[0][1]["udid"], phones[0][1]["name"]
+    ios_version = ".".join(str(n) for n in phones[0][0])
 else:
-    phone_udid, phone_name = create("SleepPause iPhone", ios, lambda n: "iPhone" in n and "Pro" in n)
+    phone_udid, phone_name = create("SleepPause iPhone", ios, lambda n: "iPhone" in n and re.search(r"\bPro\b", n) and "Max" not in n and "Duo" not in n)
+    ios_version = ios.get("version") or ios.get("name")
 if watches:
     watch_udid, watch_name = watches[0]["udid"], watches[0]["name"]
 else:
@@ -114,7 +133,7 @@ def emit(key, value):
 
 emit("PHONE_UDID", phone_udid)
 emit("PHONE_NAME", phone_name)
-emit("PHONE_RUNTIME", ios.get("version") or ios.get("name"))
+emit("PHONE_RUNTIME", ios_version)
 emit("WATCH_UDID", watch_udid)
 emit("WATCH_NAME", watch_name)
 emit("WATCH_RUNTIME", watch.get("version") or watch.get("name"))
@@ -201,7 +220,7 @@ echo "=== build watchOS simulator ==="
 xcodebuild \
   -project SleepPause.xcodeproj \
   -scheme SleepPauseWatch \
-  -destination "platform=watchOS Simulator,id=$WATCH_UDID" \
+  -destination "generic/platform=watchOS Simulator" \
   -configuration Debug \
   -derivedDataPath "$DD" \
   CODE_SIGNING_ALLOWED=YES \
