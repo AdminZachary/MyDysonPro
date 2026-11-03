@@ -270,7 +270,24 @@ boot_watch() {
   xcrun simctl bootstatus "$WATCH_UDID" -b
 }
 
-boot_watch
+if ! boot_watch; then
+  echo "watch runtime is not bootable; downloading the watchOS simulator platform"
+  xcodebuild -downloadPlatform watchOS
+  WATCH_RUNTIME_ID="$(python3 - << 'PY'
+import json, re, subprocess
+data = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "runtimes", "available", "-j"]))
+rows = [r for r in data.get("runtimes", []) if "watch" in r.get("identifier", "").lower() or r.get("name", "").startswith("watchOS")]
+if not rows:
+    raise SystemExit("no watchOS runtime after download")
+rows.sort(key=lambda r: [int(n) for n in re.findall(r"\d+", r.get("version") or r.get("name") or "0")])
+print(rows[-1]["identifier"])
+PY
+)"
+  echo "creating a watch on $WATCH_RUNTIME_ID"
+  WATCH_UDID="$(xcrun simctl create "SleepPause Watch Shot" "$WATCH_TYPE_ID" "$WATCH_RUNTIME_ID")"
+  xcrun simctl boot "$WATCH_UDID"
+  xcrun simctl bootstatus "$WATCH_UDID" -b
+fi
 prepare_language "$WATCH_UDID"
 codesign --force --deep --sign - "$WATCH_APP"
 xcrun simctl install "$WATCH_UDID" "$WATCH_APP"
